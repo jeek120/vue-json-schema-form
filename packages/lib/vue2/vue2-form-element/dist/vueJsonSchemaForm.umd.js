@@ -12031,12 +12031,17 @@
     //
     //
     //
+    //
+    //
+    //
+    //
+    //
     var script$3 = {
       name: 'TableWidget',
       props: {
         values: {
           default: function _default() {
-            return [['', '', ''], ['', '', '']];
+            return [['1列', '2列', '3列'], ['', '', '']];
           },
           type: [Array]
         }
@@ -12052,17 +12057,23 @@
       computed: {
         excelTxt: {
           get: function get() {
-            return this.values.map(function (arr) {
-              return arr.join('\t');
-            }).join('\n');
+            var strs = [];
+            this.values.forEach(function (arr) {
+              strs.push(arr.join('\t'));
+            });
+            return strs.join('\n');
           },
           set: function set(newValue) {
-            var arrs = newValue.split('\n');
-            arrs.map(function (line) {
-              var arr = line.split('\t');
-              return arr;
+            var _this = this;
+
+            debugger;
+            var arrs = newValue.replace(/\n$/, '').split('\n');
+            this.values.length = 0;
+            arrs.forEach(function (line) {
+              _this.values.push(line.split('\t'));
             });
-            this.values = arrs;
+            console.log(arrs);
+            console.log(this.values);
           }
         }
       },
@@ -12073,12 +12084,14 @@
             arr.push(item);
             return arr;
           });
+          this.$emit('input', this.values);
         },
         removeCol: function removeCol() {
           this.values.map(function (arr) {
             arr.pop();
             return arr;
           });
+          this.$emit('input', this.values);
         },
         addRow: function addRow(j) {
           debugger;
@@ -12089,12 +12102,15 @@
           }
 
           this.values.splice(j, 0, arr);
+          this.$emit('input', this.values);
         },
         removeRow: function removeRow(j) {
           this.values.splice(j, 1);
+          this.$emit('input', this.values);
         },
         excelOk: function excelOk() {
           this.excelTxt = this.domExcelTxt;
+          this.$emit('input', this.values);
         }
       }
     };
@@ -12194,8 +12210,14 @@
         return _c("el-table-column", {
           key: i,
           attrs: {
-            label: "item"
-          }
+            label: item
+          },
+          scopedSlots: _vm._u([{
+            key: "default",
+            fn: function fn(scope) {
+              return [_vm._v("\n                " + _vm._s(scope.row[i]) + "\n            ")];
+            }
+          }], null, true)
         });
       }), _vm._v(" "), _c("el-table-column", {
         attrs: {
@@ -12207,6 +12229,7 @@
             return [_c("el-button", {
               attrs: {
                 circle: "",
+                size: "small",
                 type: "danger",
                 icon: "el-icon-delete"
               },
@@ -12218,6 +12241,7 @@
             }), _vm._v(" "), _c("el-button", {
               attrs: {
                 circle: "",
+                size: "small",
                 type: "primary",
                 icon: "el-icon-plus"
               },

@@ -48,7 +48,7 @@
             <el-table-column
                 v-for="(item, i) in values[0]"
                 :key="i"
-                label="item"
+                :label="item"
             >
                 <template slot-scope="scope">
                     {{ scope.row[i] }}
@@ -60,6 +60,7 @@
                 <template slot-scope="scope">
                     <el-button
                         circle
+                        size="small"
                         type="danger"
                         icon="el-icon-delete"
                         @click="removeRow(scope.$index)"
@@ -67,6 +68,7 @@
                     </el-button>
                     <el-button
                         circle
+                        size="small"
                         type="primary"
                         icon="el-icon-plus"
                         @click="addRow(scope.$index)"
@@ -98,15 +100,21 @@ export default {
     computed: {
         excelTxt: {
             get() {
-                return this.values.map(arr => arr.join('\t')).join('\n');
+                const strs = [];
+                this.values.forEach(arr => {
+                    strs.push(arr.join('\t'))
+                })
+                return strs.join('\n');
             },
             set(newValue) {
-                const arrs = newValue.split('\n');
-                arrs.map((line) => {
-                    const arr = line.split('\t');
-                    return arr;
+                debugger;
+                const arrs = newValue.replace(/\n$/, '').split('\n');
+                this.values.length=0
+                arrs.forEach((line) => {
+                    this.values.push(line.split('\t'));
                 });
-                this.values = arrs;
+                console.log(arrs)
+                console.log(this.values)
             }
         }
     },
@@ -117,12 +125,14 @@ export default {
                 arr.push(item);
                 return arr;
             });
+            this.$emit('input', this.values);
         },
         removeCol() {
             this.values.map((arr) => {
                 arr.pop();
                 return arr;
             });
+            this.$emit('input', this.values);
         },
         addRow(j) {
             debugger;
@@ -131,12 +141,15 @@ export default {
                 arr.push('');
             }
             this.values.splice(j, 0, arr);
+            this.$emit('input', this.values);
         },
         removeRow(j) {
             this.values.splice(j, 1);
+            this.$emit('input', this.values);
         },
         excelOk() {
             this.excelTxt = this.domExcelTxt;
+            this.$emit('input', this.values);
         }
     }
 
