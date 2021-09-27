@@ -2,10 +2,10 @@
  * Created by Liu.Jun on 2020/4/24 11:56.
  */
 
-import { computedCurPath } from '@lljj/vjsf-utils/vueUtils';
-import { getUiOptions, replaceArrayIndex } from '@lljj/vjsf-utils/formUtils';
+import { computedCurPath } from 'vjsf-utils/vueUtils';
+import { getUiOptions, replaceArrayIndex } from 'vjsf-utils/formUtils';
 
-import FieldGroupWrap from '@lljj/vjsf-utils/components/FieldGroupWrap';
+import FieldGroupWrap from 'vjsf-utils/components/FieldGroupWrap';
 import SchemaField from '../../SchemaField';
 import ArrayOrderList from '../components/ArrayOrderList';
 

@@ -7,6 +7,7 @@ import componentPackInput from '../viewComponents/Input';
 import componentPackColor from '../viewComponents/Color';
 import componentPackInputNumber from '../viewComponents/InputNumber';
 import componentPackSlider from '../viewComponents/Slider';
+import componentPackTable from '../viewComponents/Table';
 
 // 是否 Boolean
 import componentPackBooleanSwitch from '../viewComponents/SelectBoolean/elSwitch';
@@ -84,6 +85,9 @@ const tools = [
         }, {
             title: '颜色选择',
             componentPack: componentPackColor
+        }, {
+            title: '表格',
+            componentPack: componentPackTable
         }]
     },
     {

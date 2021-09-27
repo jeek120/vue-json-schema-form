@@ -2,13 +2,13 @@
  * Created by Liu.Jun on 2020/4/23 10:50.
  */
 
-import { getWidgetConfig, optionsList } from 'vjsf-utils/formUtils';
+import { getWidgetConfig } from 'vjsf-utils/formUtils';
 
 import Widget from '../../components/Widget';
 import vueProps from '../props';
 
 export default {
-    name: 'BooleanField',
+    name: 'TableField',
     props: vueProps,
     functional: true,
     render(h, context) {
@@ -16,11 +16,7 @@ export default {
             schema, uiSchema, curNodePath, rootFormData, globalOptions
         } = context.props;
 
-        // Bool 会默认传入枚举类型选项 true false
-        const enumOptions = optionsList({
-            enumNames: schema.enumNames || ['true', 'false'],
-            enum: schema.enum || [true, false]
-        }, uiSchema, curNodePath, rootFormData);
+        const colNum = 3;
 
         const widgetConfig = getWidgetConfig({
             schema,
@@ -28,10 +24,10 @@ export default {
             curNodePath,
             rootFormData
         }, () => ({
-            widget: globalOptions.WIDGET_MAP.types.boolean
+            widget: globalOptions.WIDGET_MAP.types.table
         }));
 
-        widgetConfig.uiProps.enumOptions = widgetConfig.uiProps.enumOptions || enumOptions;
+        widgetConfig.uiProps.colNum = widgetConfig.uiProps.colNum || colNum;
 
         return h(
             Widget,

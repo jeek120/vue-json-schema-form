@@ -1,5 +1,43 @@
 /** @license @lljj/vue3-form-element (c) 2020-2021 Liu.Jun License: Apache-2.0 */
-import { resolveComponent as resolveComponent$1, h, openBlock, createBlock, toDisplayString, createCommentVNode, createVNode, renderSlot, inject, computed, ref as ref$1, watch, toRaw, getCurrentInstance, provide, withCtx, Fragment, renderList, createTextVNode, defineComponent, onMounted } from 'vue';
+import { resolveComponent as resolveComponent$1, h, openBlock, createElementBlock, toDisplayString, createCommentVNode, createElementVNode, renderSlot, inject, computed, ref as ref$1, watch, toRaw, getCurrentInstance, provide, createBlock, normalizeProps, guardReactiveProps, withCtx, Fragment, renderList, createTextVNode, defineComponent, onMounted } from 'vue';
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+
+    if (enumerableOnly) {
+      symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+    }
+
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
 
 function _typeof(obj) {
   "@babel/helpers - typeof";
@@ -48,40 +86,6 @@ function _extends() {
   };
 
   return _extends.apply(this, arguments);
-}
-
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly) symbols = symbols.filter(function (sym) {
-      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-    });
-    keys.push.apply(keys, symbols);
-  }
-
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
-
-  return target;
 }
 
 function _objectWithoutPropertiesLoose(source, excluded) {
@@ -137,18 +141,21 @@ function _arrayWithHoles(arr) {
 }
 
 function _iterableToArray(iter) {
-  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
 }
 
 function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+  if (_i == null) return;
   var _arr = [];
   var _n = true;
   var _d = false;
-  var _e = undefined;
+
+  var _s, _e;
 
   try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
 
       if (i && _arr.length === i) break;
@@ -215,7 +222,7 @@ function _toPropertyKey(arg) {
  * Created by Liu.Jun on 2020/4/25 14:45.
  */
 
-var pathSeparator = '.'; // nodePath 转css类名
+var pathSeparator$1 = '.'; // nodePath 转css类名
 
 function nodePath2ClassName(path) {
   var rootPathName = '__pathRoot';
@@ -227,12 +234,12 @@ function isRootNodePath(path) {
 } // 计算当前节点path
 
 function computedCurPath(prePath, curKey) {
-  return prePath === '' ? curKey : [prePath, curKey].join(pathSeparator);
+  return prePath === '' ? curKey : [prePath, curKey].join(pathSeparator$1);
 } // 删除当前path值
 
-function getPathVal(obj, path) {
+function getPathVal$1(obj, path) {
   var leftDeviation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-  var pathArr = path.split(pathSeparator);
+  var pathArr = path.split(pathSeparator$1);
 
   for (var i = 0; i < pathArr.length - leftDeviation; i += 1) {
     // 错误路径或者undefined中断查找
@@ -251,14 +258,14 @@ function path2prop(path) {
  * Created by Liu.Jun on 2020/4/25 14:45.
  */
 
-var pathSeparator$1 = '.'; // 删除当前path值
+var pathSeparator = '.'; // 删除当前path值
 
 function deletePathVal(vueData, name) {
   delete vueData[name];
 } // 设置当前path值
 
 function setPathVal(obj, path, value) {
-  var pathArr = path.split(pathSeparator$1);
+  var pathArr = path.split(pathSeparator);
 
   for (var i = 0; i < pathArr.length; i += 1) {
     if (pathArr.length - i < 2) {
@@ -283,7 +290,7 @@ var vue3Utils = /*#__PURE__*/Object.freeze({
   nodePath2ClassName: nodePath2ClassName,
   isRootNodePath: isRootNodePath,
   computedCurPath: computedCurPath,
-  getPathVal: getPathVal,
+  getPathVal: getPathVal$1,
   path2prop: path2prop
 });
 
@@ -582,7 +589,7 @@ function openNewPage(url) {
 }
 
 // $ref 引用
-function getPathVal$1(obj, pathStr) {
+function getPathVal(obj, pathStr) {
   var pathArr = pathStr.split('/');
 
   for (var i = 0; i < pathArr.length; i += 1) {
@@ -605,7 +612,7 @@ function findSchemaDefinition($ref) {
     throw new Error("Could not find a definition for ".concat(origRef, "."));
   }
 
-  var current = getPathVal$1(rootSchema, $ref);
+  var current = getPathVal(rootSchema, $ref);
 
   if (current === undefined) {
     throw new Error("Could not find a definition for ".concat(origRef, "."));
@@ -635,7 +642,7 @@ function getCjsExportFromNamespace (n) {
 var uri_all = createCommonjsModule(function (module, exports) {
 /** @license URI.js v4.4.1 (c) 2011 Gary Court. License: http://github.com/garycourt/uri-js */
 (function (global, factory) {
-	 factory(exports) ;
+	factory(exports) ;
 }(commonjsGlobal, (function (exports) {
 function merge() {
     for (var _len = arguments.length, sets = Array(_len), _key = 0; _key < _len; _key++) {
@@ -1837,7 +1844,7 @@ var handler$3 = {
 
 var O = {};
 //RFC 3986
-var UNRESERVED$$ = "[A-Za-z0-9\\-\\.\\_\\~" + ( "\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF" ) + "]";
+var UNRESERVED$$ = "[A-Za-z0-9\\-\\.\\_\\~" + ("\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF" ) + "]";
 var HEXDIG$$ = "[0-9A-Fa-f]"; //case-insensitive
 var PCT_ENCODED$ = subexp(subexp("%[EFef]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%[89A-Fa-f]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%" + HEXDIG$$ + HEXDIG$$)); //expanded
 //RFC 5322, except these symbols as per RFC 6068: @ : / ? # [ ] & ; =
@@ -2086,7 +2093,7 @@ var fastDeepEqual = function equal(a, b) {
 
 // https://mathiasbynens.be/notes/javascript-encoding
 // https://github.com/bestiejs/punycode.js - punycode.ucs2.decode
-var ucs2length = function ucs2length(str) {
+var ucs2length$1 = function ucs2length(str) {
   var length = 0
     , len = str.length
     , pos = 0
@@ -2108,11 +2115,11 @@ var util = {
   checkDataType: checkDataType,
   checkDataTypes: checkDataTypes,
   coerceToTypes: coerceToTypes,
-  toHash: toHash,
+  toHash: toHash$1,
   getProperty: getProperty,
   escapeQuotes: escapeQuotes,
   equal: fastDeepEqual,
-  ucs2length: ucs2length,
+  ucs2length: ucs2length$1,
   varOccurences: varOccurences,
   varReplace: varReplace,
   schemaHasRules: schemaHasRules,
@@ -2163,7 +2170,7 @@ function checkDataTypes(dataTypes, data, strictNumbers) {
     case 1: return checkDataType(dataTypes[0], data, strictNumbers, true);
     default:
       var code = '';
-      var types = toHash(dataTypes);
+      var types = toHash$1(dataTypes);
       if (types.array && types.object) {
         code = types.null ? '(': '(!' + data + ' || ';
         code += 'typeof ' + data + ' !== "object")';
@@ -2180,7 +2187,7 @@ function checkDataTypes(dataTypes, data, strictNumbers) {
 }
 
 
-var COERCE_TO_TYPES = toHash([ 'string', 'number', 'integer', 'boolean', 'null' ]);
+var COERCE_TO_TYPES = toHash$1([ 'string', 'number', 'integer', 'boolean', 'null' ]);
 function coerceToTypes(optionCoerceTypes, dataTypes) {
   if (Array.isArray(dataTypes)) {
     var types = [];
@@ -2198,19 +2205,19 @@ function coerceToTypes(optionCoerceTypes, dataTypes) {
 }
 
 
-function toHash(arr) {
+function toHash$1(arr) {
   var hash = {};
   for (var i=0; i<arr.length; i++) hash[arr[i]] = true;
   return hash;
 }
 
 
-var IDENTIFIER = /^[a-z$_][a-z$_0-9]*$/i;
+var IDENTIFIER$1 = /^[a-z$_][a-z$_0-9]*$/i;
 var SINGLE_QUOTE = /'|\\/g;
 function getProperty(key) {
   return typeof key == 'number'
           ? '[' + key + ']'
-          : IDENTIFIER.test(key)
+          : IDENTIFIER$1.test(key)
             ? '.' + key
             : "['" + escapeQuotes(key) + "']";
 }
@@ -2278,17 +2285,17 @@ function getPath(currentPath, prop, jsonPointers) {
 }
 
 
-var JSON_POINTER = /^\/(?:[^~]|~0|~1)*$/;
-var RELATIVE_JSON_POINTER = /^([0-9]+)(#|\/(?:[^~]|~0|~1)*)?$/;
+var JSON_POINTER$1 = /^\/(?:[^~]|~0|~1)*$/;
+var RELATIVE_JSON_POINTER$1 = /^([0-9]+)(#|\/(?:[^~]|~0|~1)*)?$/;
 function getData($data, lvl, paths) {
   var up, jsonPointer, data, matches;
   if ($data === '') return 'rootData';
   if ($data[0] == '/') {
-    if (!JSON_POINTER.test($data)) throw new Error('Invalid JSON-pointer: ' + $data);
+    if (!JSON_POINTER$1.test($data)) throw new Error('Invalid JSON-pointer: ' + $data);
     jsonPointer = $data;
     data = 'rootData';
   } else {
-    matches = $data.match(RELATIVE_JSON_POINTER);
+    matches = $data.match(RELATIVE_JSON_POINTER$1);
     if (!matches) throw new Error('Invalid JSON-pointer: ' + $data);
     up = +matches[1];
     jsonPointer = matches[2];
@@ -2339,6 +2346,28 @@ function escapeJsonPointer(str) {
 function unescapeJsonPointer(str) {
   return str.replace(/~1/g, '/').replace(/~0/g, '~');
 }
+util.copy;
+util.checkDataType;
+util.checkDataTypes;
+util.coerceToTypes;
+util.toHash;
+util.getProperty;
+util.escapeQuotes;
+util.equal;
+util.ucs2length;
+util.varOccurences;
+util.varReplace;
+util.schemaHasRules;
+util.schemaHasRulesExcept;
+util.schemaUnknownRules;
+util.toQuotedString;
+util.getPathExpr;
+util.getPath;
+util.getData;
+util.unescapeFragment;
+util.unescapeJsonPointer;
+util.escapeFragment;
+util.escapeJsonPointer;
 
 var schema_obj = SchemaObject;
 
@@ -2444,7 +2473,7 @@ resolve.fullPath = getFullPath;
 resolve.url = resolveUrl;
 resolve.ids = resolveIds;
 resolve.inlineRef = inlineRef;
-resolve.schema = resolveSchema;
+resolve.schema = resolveSchema$1;
 
 /**
  * [resolve and compile the references ($ref)]
@@ -2469,7 +2498,7 @@ function resolve(compile, root, ref) {
             : refVal.validate || this._compile(refVal);
   }
 
-  var res = resolveSchema.call(this, root, ref);
+  var res = resolveSchema$1.call(this, root, ref);
   var schema, v, baseId;
   if (res) {
     schema = res.schema;
@@ -2496,7 +2525,7 @@ function resolve(compile, root, ref) {
  * @param  {String} ref  reference to resolve
  * @return {Object} object with properties schema, root, baseId
  */
-function resolveSchema(root, ref) {
+function resolveSchema$1(root, ref) {
   /* jshint validthis: true */
   var p = uri_all.parse(ref)
     , refPath = _getFullPath(p)
@@ -2530,7 +2559,7 @@ function resolveSchema(root, ref) {
 /* @this Ajv */
 function resolveRecursive(root, ref, parsedRef) {
   /* jshint validthis: true */
-  var res = resolveSchema.call(this, root, ref);
+  var res = resolveSchema$1.call(this, root, ref);
   if (res) {
     var schema = res.schema;
     var baseId = res.baseId;
@@ -2562,7 +2591,7 @@ function getJsonPointer(parsedRef, baseId, schema, root) {
         if (id) baseId = resolveUrl(baseId, id);
         if (schema.$ref) {
           var $ref = resolveUrl(baseId, schema.$ref);
-          var res = resolveSchema.call(this, root, $ref);
+          var res = resolveSchema$1.call(this, root, $ref);
           if (res) {
             schema = res.schema;
             root = res.root;
@@ -2701,25 +2730,25 @@ function resolveIds(schema) {
 }
 
 var error_classes = {
-  Validation: errorSubclass(ValidationError),
-  MissingRef: errorSubclass(MissingRefError)
+  Validation: errorSubclass(ValidationError$1),
+  MissingRef: errorSubclass(MissingRefError$1)
 };
 
 
-function ValidationError(errors) {
+function ValidationError$1(errors) {
   this.message = 'validation failed';
   this.errors = errors;
   this.ajv = this.validation = true;
 }
 
 
-MissingRefError.message = function (baseId, ref) {
+MissingRefError$1.message = function (baseId, ref) {
   return 'can\'t resolve reference ' + ref + ' from id ' + baseId;
 };
 
 
-function MissingRefError(baseId, ref, message) {
-  this.message = message || MissingRefError.message(baseId, ref);
+function MissingRefError$1(baseId, ref, message) {
+  this.message = message || MissingRefError$1.message(baseId, ref);
   this.missingRef = resolve_1.url(baseId, ref);
   this.missingSchema = resolve_1.normalizeId(resolve_1.fullPath(this.missingRef));
 }
@@ -2789,7 +2818,7 @@ var fastJsonStableStringify = function (data, opts) {
     })(data);
 };
 
-var validate = function generate_validate(it, $keyword, $ruleType) {
+var validate$2 = function generate_validate(it, $keyword, $ruleType) {
   var out = '';
   var $async = it.schema.$async === true,
     $refKeywords = it.util.schemaHasRulesExcept(it.schema, it.RULES.all, '$ref'),
@@ -3275,13 +3304,13 @@ var validate = function generate_validate(it, $keyword, $ruleType) {
  * Functions below are used inside compiled validations function
  */
 
-var ucs2length$1 = util.ucs2length;
+var ucs2length = util.ucs2length;
 
 
 // this error is thrown by async schemas to return validation errors via exception
-var ValidationError$1 = error_classes.Validation;
+var ValidationError = error_classes.Validation;
 
-var compile_1 = compile;
+var compile_1 = compile$1;
 
 
 /**
@@ -3293,7 +3322,7 @@ var compile_1 = compile;
  * @param  {String} baseId base ID for IDs in the schema
  * @return {Function} validation function
  */
-function compile(schema, root, localRefs, baseId) {
+function compile$1(schema, root, localRefs, baseId) {
   /* jshint validthis: true, evil: true */
   /* eslint no-shadow: 0 */
   var self = this
@@ -3345,11 +3374,11 @@ function compile(schema, root, localRefs, baseId) {
   function localCompile(_schema, _root, localRefs, baseId) {
     var isRoot = !_root || (_root && _root.schema == _schema);
     if (_root.schema != root.schema)
-      return compile.call(self, _schema, _root, localRefs, baseId);
+      return compile$1.call(self, _schema, _root, localRefs, baseId);
 
     var $async = _schema.$async === true;
 
-    var sourceCode = validate({
+    var sourceCode = validate$2({
       isTop: true,
       schema: _schema,
       isRoot: isRoot,
@@ -3360,7 +3389,7 @@ function compile(schema, root, localRefs, baseId) {
       errorPath: '""',
       MissingRefError: error_classes.MissingRef,
       RULES: RULES,
-      validate: validate,
+      validate: validate$2,
       util: util,
       resolve: resolve_1,
       resolveRef: resolveRef,
@@ -3379,7 +3408,7 @@ function compile(schema, root, localRefs, baseId) {
 
     if (opts.processCode) sourceCode = opts.processCode(sourceCode, _schema);
     // console.log('\n\n\n *** \n', JSON.stringify(sourceCode));
-    var validate$1;
+    var validate;
     try {
       var makeValidate = new Function(
         'self',
@@ -3395,7 +3424,7 @@ function compile(schema, root, localRefs, baseId) {
         sourceCode
       );
 
-      validate$1 = makeValidate(
+      validate = makeValidate(
         self,
         RULES,
         formats,
@@ -3404,31 +3433,31 @@ function compile(schema, root, localRefs, baseId) {
         defaults,
         customRules,
         fastDeepEqual,
-        ucs2length$1,
-        ValidationError$1
+        ucs2length,
+        ValidationError
       );
 
-      refVal[0] = validate$1;
+      refVal[0] = validate;
     } catch(e) {
       self.logger.error('Error compiling schema, function code:', sourceCode);
       throw e;
     }
 
-    validate$1.schema = _schema;
-    validate$1.errors = null;
-    validate$1.refs = refs;
-    validate$1.refVal = refVal;
-    validate$1.root = isRoot ? validate$1 : _root;
-    if ($async) validate$1.$async = true;
+    validate.schema = _schema;
+    validate.errors = null;
+    validate.refs = refs;
+    validate.refVal = refVal;
+    validate.root = isRoot ? validate : _root;
+    if ($async) validate.$async = true;
     if (opts.sourceCode === true) {
-      validate$1.source = {
+      validate.source = {
         code: sourceCode,
         patterns: patterns,
         defaults: defaults
       };
     }
 
-    return validate$1;
+    return validate;
   }
 
   function resolveRef(baseId, ref, isRoot) {
@@ -3456,7 +3485,7 @@ function compile(schema, root, localRefs, baseId) {
       if (localSchema) {
         v = resolve_1.inlineRef(localSchema, opts.inlineRefs)
             ? localSchema
-            : compile.call(self, localSchema, root, localRefs, baseId);
+            : compile$1.call(self, localSchema, root, localRefs, baseId);
       }
     }
 
@@ -3692,9 +3721,9 @@ var URITEMPLATE = /^(?:(?:[^\x00-\x20"'<>%\\^`{|}]|%[0-9a-f]{2})|\{[+#./;?&=,!@|
 // var URL = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u{00a1}-\u{ffff}0-9]+-)*[a-z\u{00a1}-\u{ffff}0-9]+)(?:\.(?:[a-z\u{00a1}-\u{ffff}0-9]+-)*[a-z\u{00a1}-\u{ffff}0-9]+)*(?:\.(?:[a-z\u{00a1}-\u{ffff}]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/iu;
 var URL = /^(?:(?:http[s\u017F]?|ftp):\/\/)(?:(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+(?::(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?@)?(?:(?!10(?:\.[0-9]{1,3}){3})(?!127(?:\.[0-9]{1,3}){3})(?!169\.254(?:\.[0-9]{1,3}){2})(?!192\.168(?:\.[0-9]{1,3}){2})(?!172\.(?:1[6-9]|2[0-9]|3[01])(?:\.[0-9]{1,3}){2})(?:[1-9][0-9]?|1[0-9][0-9]|2[01][0-9]|22[0-3])(?:\.(?:1?[0-9]{1,2}|2[0-4][0-9]|25[0-5])){2}(?:\.(?:[1-9][0-9]?|1[0-9][0-9]|2[0-4][0-9]|25[0-4]))|(?:(?:(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-)*(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)(?:\.(?:(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-)*(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)*(?:\.(?:(?:[a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]){2,})))(?::[0-9]{2,5})?(?:\/(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?$/i;
 var UUID = /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
-var JSON_POINTER$1 = /^(?:\/(?:[^~/]|~0|~1)*)*$/;
+var JSON_POINTER = /^(?:\/(?:[^~/]|~0|~1)*)*$/;
 var JSON_POINTER_URI_FRAGMENT = /^#(?:\/(?:[a-z0-9_\-.!$&'()*+,;:=@]|%[0-9a-f]{2}|~0|~1)*)*$/i;
-var RELATIVE_JSON_POINTER$1 = /^(?:0|[1-9][0-9]*)(?:#|(?:\/(?:[^~/]|~0|~1)*)*)$/;
+var RELATIVE_JSON_POINTER = /^(?:0|[1-9][0-9]*)(?:#|(?:\/(?:[^~/]|~0|~1)*)*)$/;
 
 
 var formats_1 = formats;
@@ -3730,10 +3759,10 @@ formats.fast = {
   uuid: UUID,
   // JSON-pointer: https://tools.ietf.org/html/rfc6901
   // uri fragment: https://tools.ietf.org/html/rfc3986#appendix-A
-  'json-pointer': JSON_POINTER$1,
+  'json-pointer': JSON_POINTER,
   'json-pointer-uri-fragment': JSON_POINTER_URI_FRAGMENT,
   // relative JSON-pointer: http://tools.ietf.org/html/draft-luff-relative-json-pointer-00
-  'relative-json-pointer': RELATIVE_JSON_POINTER$1
+  'relative-json-pointer': RELATIVE_JSON_POINTER
 };
 
 
@@ -3751,9 +3780,9 @@ formats.full = {
   ipv6: /^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(?:%.+)?\s*$/i,
   regex: regex,
   uuid: UUID,
-  'json-pointer': JSON_POINTER$1,
+  'json-pointer': JSON_POINTER,
   'json-pointer-uri-fragment': JSON_POINTER_URI_FRAGMENT,
-  'relative-json-pointer': RELATIVE_JSON_POINTER$1
+  'relative-json-pointer': RELATIVE_JSON_POINTER
 };
 
 
@@ -5546,7 +5575,7 @@ var pattern = function generate_pattern(it, $keyword, $ruleType) {
   return out;
 };
 
-var properties = function generate_properties(it, $keyword, $ruleType) {
+var properties$2 = function generate_properties(it, $keyword, $ruleType) {
   var out = ' ';
   var $lvl = it.level;
   var $dataLvl = it.dataLevel;
@@ -5962,7 +5991,7 @@ var propertyNames = function generate_propertyNames(it, $keyword, $ruleType) {
   return out;
 };
 
-var required = function generate_required(it, $keyword, $ruleType) {
+var required$1 = function generate_required(it, $keyword, $ruleType) {
   var out = ' ';
   var $lvl = it.level;
   var $dataLvl = it.dataLevel;
@@ -6339,14 +6368,14 @@ var dotjs = {
   not: not,
   oneOf: oneOf,
   pattern: pattern,
-  properties: properties,
+  properties: properties$2,
   propertyNames: propertyNames,
-  required: required,
+  required: required$1,
   uniqueItems: uniqueItems,
-  validate: validate
+  validate: validate$2
 };
 
-var toHash$1 = util.toHash;
+var toHash = util.toHash;
 
 var rules = function rules() {
   var RULES = [
@@ -6372,8 +6401,8 @@ var rules = function rules() {
     'additionalItems', 'then', 'else'
   ];
   var TYPES = [ 'number', 'integer', 'string', 'array', 'object', 'boolean', 'null' ];
-  RULES.all = toHash$1(ALL);
-  RULES.types = toHash$1(TYPES);
+  RULES.all = toHash(ALL);
+  RULES.types = toHash(TYPES);
 
   RULES.forEach(function (group) {
     group.rules = group.rules.map(function (keyword) {
@@ -6404,7 +6433,7 @@ var rules = function rules() {
     if (group.type) RULES.types[group.type] = group;
   });
 
-  RULES.keywords = toHash$1(ALL.concat(KEYWORDS));
+  RULES.keywords = toHash(ALL.concat(KEYWORDS));
   RULES.custom = {};
 
   return RULES;
@@ -6432,7 +6461,7 @@ var KEYWORDS = [
   'const'
 ];
 
-var data = function (metaSchema, keywordsJsonPointers) {
+var data$2 = function (metaSchema, keywordsJsonPointers) {
   for (var i=0; i<keywordsJsonPointers.length; i++) {
     metaSchema = JSON.parse(JSON.stringify(metaSchema));
     var segments = keywordsJsonPointers[i].split('/');
@@ -6458,7 +6487,7 @@ var data = function (metaSchema, keywordsJsonPointers) {
   return metaSchema;
 };
 
-var MissingRefError$1 = error_classes.MissingRef;
+var MissingRefError = error_classes.MissingRef;
 
 var async = compileAsync;
 
@@ -6511,7 +6540,7 @@ function compileAsync(schema, meta, callback) {
   function _compileAsync(schemaObj) {
     try { return self._compile(schemaObj); }
     catch(e) {
-      if (e instanceof MissingRefError$1) return loadMissingSchema(e);
+      if (e instanceof MissingRefError) return loadMissingSchema(e);
       throw e;
     }
 
@@ -6775,8 +6804,8 @@ var custom = function generate_custom(it, $keyword, $ruleType) {
   return out;
 };
 
-var $schema = "http://json-schema.org/draft-07/schema#";
-var $id = "http://json-schema.org/draft-07/schema#";
+var $schema$1 = "http://json-schema.org/draft-07/schema#";
+var $id$1 = "http://json-schema.org/draft-07/schema#";
 var title = "Core schema meta-schema";
 var definitions = {
 	schemaArray: {
@@ -6821,7 +6850,7 @@ var definitions = {
 		]
 	}
 };
-var type = [
+var type$1 = [
 	"object",
 	"boolean"
 ];
@@ -7018,22 +7047,22 @@ var properties$1 = {
 	}
 };
 var jsonSchemaDraft07 = {
-	$schema: $schema,
-	$id: $id,
+	$schema: $schema$1,
+	$id: $id$1,
 	title: title,
 	definitions: definitions,
-	type: type,
+	type: type$1,
 	properties: properties$1,
 	"default": true
 };
 
 var jsonSchemaDraft07$1 = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  $schema: $schema,
-  $id: $id,
+  $schema: $schema$1,
+  $id: $id$1,
   title: title,
   definitions: definitions,
-  type: type,
+  type: type$1,
   properties: properties$1,
   'default': jsonSchemaDraft07
 });
@@ -7073,8 +7102,13 @@ var definition_schema = {
     }
   }
 };
+definition_schema.$id;
+definition_schema.definitions;
+definition_schema.type;
+definition_schema.dependencies;
+definition_schema.properties;
 
-var IDENTIFIER$1 = /^[a-z_$][a-z0-9_$-]*$/i;
+var IDENTIFIER = /^[a-z_$][a-z0-9_$-]*$/i;
 
 
 
@@ -7100,7 +7134,7 @@ function addKeyword(keyword, definition) {
   if (RULES.keywords[keyword])
     throw new Error('Keyword ' + keyword + ' is already defined');
 
-  if (!IDENTIFIER$1.test(keyword))
+  if (!IDENTIFIER.test(keyword))
     throw new Error('Keyword ' + keyword + ' is not a valid identifier');
 
   if (definition) {
@@ -7219,14 +7253,14 @@ function validateKeyword(definition, throwError) {
     return false;
 }
 
-var $schema$1 = "http://json-schema.org/draft-07/schema#";
-var $id$1 = "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#";
+var $schema = "http://json-schema.org/draft-07/schema#";
+var $id = "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#";
 var description = "Meta-schema for $data reference (JSON Schema extension proposal)";
-var type$1 = "object";
-var required$1 = [
+var type = "object";
+var required = [
 	"$data"
 ];
-var properties$2 = {
+var properties = {
 	$data: {
 		type: "string",
 		anyOf: [
@@ -7240,34 +7274,34 @@ var properties$2 = {
 	}
 };
 var additionalProperties = false;
-var data$1 = {
-	$schema: $schema$1,
-	$id: $id$1,
+var data = {
+	$schema: $schema,
+	$id: $id,
 	description: description,
-	type: type$1,
-	required: required$1,
-	properties: properties$2,
+	type: type,
+	required: required,
+	properties: properties,
 	additionalProperties: additionalProperties
 };
 
-var data$2 = /*#__PURE__*/Object.freeze({
+var data$1 = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  $schema: $schema$1,
-  $id: $id$1,
+  $schema: $schema,
+  $id: $id,
   description: description,
-  type: type$1,
-  required: required$1,
-  properties: properties$2,
+  type: type,
+  required: required,
+  properties: properties,
   additionalProperties: additionalProperties,
-  'default': data$1
+  'default': data
 });
 
-var require$$1 = getCjsExportFromNamespace(data$2);
+var require$$1 = getCjsExportFromNamespace(data$1);
 
-var ajv = Ajv;
+var ajv$1 = Ajv;
 
 Ajv.prototype.validate = validate$1;
-Ajv.prototype.compile = compile$1;
+Ajv.prototype.compile = compile;
 Ajv.prototype.addSchema = addSchema;
 Ajv.prototype.addMetaSchema = addMetaSchema;
 Ajv.prototype.validateSchema = validateSchema;
@@ -7289,7 +7323,7 @@ Ajv.prototype.validateKeyword = keyword.validate;
 
 Ajv.ValidationError = error_classes.Validation;
 Ajv.MissingRefError = error_classes.MissingRef;
-Ajv.$dataMetaSchema = data;
+Ajv.$dataMetaSchema = data$2;
 
 var META_SCHEMA_ID = 'http://json-schema.org/draft-07/schema';
 
@@ -7363,7 +7397,7 @@ function validate$1(schemaKeyRef, data) {
  * @param  {Boolean} _meta true if schema is a meta-schema. Used internally to compile meta schemas of custom keywords.
  * @return {Function} validating function
  */
-function compile$1(schema, _meta) {
+function compile(schema, _meta) {
   var schemaObj = this._addSchema(schema, undefined, _meta);
   return schemaObj.validate || this._compile(schemaObj);
 }
@@ -7700,7 +7734,7 @@ function addDefaultMetaSchema(self) {
   }
   if (self._opts.meta === false) return;
   var metaSchema = require$$2;
-  if (self._opts.$data) metaSchema = data(metaSchema, META_SUPPORT_DATA);
+  if (self._opts.$data) metaSchema = data$2(metaSchema, META_SUPPORT_DATA);
   self.addMetaSchema(metaSchema, META_SCHEMA_ID, true);
   self._refs['http://json-schema.org/schema'] = META_SCHEMA_ID;
 }
@@ -8015,6 +8049,9 @@ function intersection(arr1, arr2) {
   });
 }
 
+var _excluded$6 = ["$ref"],
+    _excluded2 = ["allOf"],
+    _excluded3 = ["allOf"];
 // 自动添加分割线
 // export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 // resolve Schema - dependencies
@@ -8195,7 +8232,7 @@ function resolveReference(schema, rootSchema, formData) {
   // eslint-disable-next-line no-unused-vars
 
   schema.$ref;
-      var localSchema = _objectWithoutProperties(schema, ["$ref"]); // Update referenced schema definition with local schema properties.
+      var localSchema = _objectWithoutProperties(schema, _excluded$6); // Update referenced schema definition with local schema properties.
 
 
   return retrieveSchema(_objectSpread2(_objectSpread2({}, $refSchema), localSchema), rootSchema, formData);
@@ -8329,20 +8366,20 @@ function resolveAllOf(schema, rootSchema, formData) {
 
   try {
     var allOf = resolvedAllOfRefSchema.allOf,
-        originProperties = _objectWithoutProperties(resolvedAllOfRefSchema, ["allOf"]);
+        originProperties = _objectWithoutProperties(resolvedAllOfRefSchema, _excluded2);
 
     return mergeSchemaAllOf.apply(void 0, [originProperties].concat(_toConsumableArray(allOf)));
   } catch (e) {
     console.warn("\u65E0\u6CD5\u5408\u5E76allOf\uFF0C\u4E22\u5F03allOf\u914D\u7F6E\u7EE7\u7EED\u6E32\u67D3: \n".concat(e)); // eslint-disable-next-line no-unused-vars
 
     resolvedAllOfRefSchema.allOf;
-        var resolvedSchemaWithoutAllOf = _objectWithoutProperties(resolvedAllOfRefSchema, ["allOf"]);
+        var resolvedSchemaWithoutAllOf = _objectWithoutProperties(resolvedAllOfRefSchema, _excluded3);
 
     return resolvedSchemaWithoutAllOf;
   }
 } // resolve Schema
 
-function resolveSchema$1(schema) {
+function resolveSchema(schema) {
   var rootSchema = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var formData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
@@ -8431,9 +8468,10 @@ function retrieveSchema(schema) {
     return {};
   }
 
-  return resolveSchema$1(schema, rootSchema, formData);
+  return resolveSchema(schema, rootSchema, formData);
 }
 
+var _excluded$5 = ["widget", "title", "labelWidth", "description", "attrs", "class", "style", "widgetListeners", "fieldAttrs", "fieldStyle", "fieldClass", "emptyValue", "width", "getWidget", "renderScopedSlots", "renderChildren", "onChange"];
 // 这里打破 JSON Schema 规范
 
 var regExpression = /{{(.*)}}/;
@@ -8452,7 +8490,7 @@ function handleExpression(rootFormData, curNodePath, expression, fallBack) {
     var code = matchExpression[1].trim(); // eslint-disable-next-line no-new-func
 
     var fn = new Function('parentFormData', 'rootFormData', "return ".concat(code));
-    return fn(getPathVal(rootFormData, curNodePath, 1), rootFormData);
+    return fn(getPathVal$1(rootFormData, curNodePath, 1), rootFormData);
   } // 回退
 
 
@@ -8494,7 +8532,7 @@ function isHiddenWidget(_ref2) {
   return widget === 'HiddenWidget' || widget === 'hidden' || !!handleExpression(rootFormData, curNodePath, hiddenExpression, function () {
     // 配置了函数 function
     if (typeof hiddenExpression === 'function') {
-      return hiddenExpression(getPathVal(rootFormData, curNodePath, 1), rootFormData);
+      return hiddenExpression(getPathVal$1(rootFormData, curNodePath, 1), rootFormData);
     } // 配置了常量 ？？
 
 
@@ -8666,7 +8704,7 @@ function getWidgetConfig(_ref6) {
       renderScopedSlots = uiOptions.renderScopedSlots,
       renderChildren = uiOptions.renderChildren,
       onChange = uiOptions.onChange,
-      uiProps = _objectWithoutProperties(uiOptions, ["widget", "title", "labelWidth", "description", "attrs", "class", "style", "widgetListeners", "fieldAttrs", "fieldStyle", "fieldClass", "emptyValue", "width", "getWidget", "renderScopedSlots", "renderChildren", "onChange"]);
+      uiProps = _objectWithoutProperties(uiOptions, _excluded$5);
 
   return {
     widget: widget,
@@ -8897,12 +8935,12 @@ var formUtils = /*#__PURE__*/Object.freeze({
   fallbackLabel: fallbackLabel
 });
 
-var ajv$1 = createAjvInstance();
+var ajv = createAjvInstance();
 var formerCustomFormats = null;
 var formerMetaSchema = null; // 创建实例
 
 function createAjvInstance() {
-  var ajvInstance = new ajv({
+  var ajvInstance = new ajv$1({
     errorDataPath: 'property',
     allErrors: true,
     multipleOfPrecision: 8,
@@ -8973,19 +9011,19 @@ function ajvValidateFormData() {
   var hasNewFormats = !deepEquals(formerCustomFormats, customFormats); // 变更了 Meta或者调整了format配置重置新的实例
 
   if (hasNewMetaSchemas || hasNewFormats) {
-    ajv$1 = createAjvInstance();
+    ajv = createAjvInstance();
   } // 添加更多要验证的模式
 
 
   if (additionalMetaSchemas && hasNewMetaSchemas && Array.isArray(additionalMetaSchemas)) {
-    ajv$1.addMetaSchema(additionalMetaSchemas);
+    ajv.addMetaSchema(additionalMetaSchemas);
     formerMetaSchema = additionalMetaSchemas;
   } // 注册自定义的 formats - 没有变更只会注册一次 - 否则重新创建实例
 
 
   if (customFormats && hasNewFormats && isObject(customFormats)) {
     Object.keys(customFormats).forEach(function (formatName) {
-      ajv$1.addFormat(formatName, customFormats[formatName]);
+      ajv.addFormat(formatName, customFormats[formatName]);
     });
     formerCustomFormats = customFormats;
   }
@@ -8993,16 +9031,16 @@ function ajvValidateFormData() {
   var validationError = null;
 
   try {
-    ajv$1.validate(schema, formData);
+    ajv.validate(schema, formData);
   } catch (err) {
     validationError = err;
   } // ajv 默认多语言处理
 
 
-  i18n.getCurrentLocalize()(ajv$1.errors);
-  var errors = transformAjvErrors(ajv$1.errors); // 清除错误
+  i18n.getCurrentLocalize()(ajv.errors);
+  var errors = transformAjvErrors(ajv.errors); // 清除错误
 
-  ajv$1.errors = null; // 处理异常
+  ajv.errors = null; // 处理异常
 
   var noProperMetaSchema = validationError && validationError.message && typeof validationError.message === 'string' && validationError.message.includes('no schema with key or ref ');
 
@@ -9110,14 +9148,14 @@ function validateFormDataAndTransformMsg() {
 
 function isValid(schema, data) {
   try {
-    return ajv$1.validate(schema, data);
+    return ajv.validate(schema, data);
   } catch (e) {
     return false;
   }
 } // ajv valida
 
 function ajvValid(schema, data) {
-  return ajv$1.validate(schema, data);
+  return ajv.validate(schema, data);
 } // 如果查找不到
 // return -1
 
@@ -9204,7 +9242,7 @@ function getMatchingOption(formData, options, rootSchema) {
   return index === -1 ? 0 : index;
 }
 
-var validate$2 = /*#__PURE__*/Object.freeze({
+var validate = /*#__PURE__*/Object.freeze({
   __proto__: null,
   ajvValidateFormData: ajvValidateFormData,
   validateFormDataAndTransformMsg: validateFormDataAndTransformMsg,
@@ -9280,18 +9318,7 @@ function computeDefaults(_schema, parentDefaults, rootSchema) {
     // Use referenced schema defaults for this node.
     var refSchema = findSchemaDefinition(schema.$ref, rootSchema);
     return computeDefaults(refSchema, defaults, rootSchema, formData, includeUndefinedValues);
-  } else if (
-  /* ('dependencies' in schema) {
-  const resolvedSchema = resolveDependencies(schema, rootSchema, formData);
-  return computeDefaults(
-  resolvedSchema,
-  defaults,
-  rootSchema,
-  formData,
-  includeUndefinedValues
-  );
-  } else if */
-  isFixedItems(schema)) {
+  } else if (isFixedItems(schema)) {
     defaults = schema.items.map(function (itemSchema, idx) {
       return computeDefaults(itemSchema, Array.isArray(parentDefaults) ? parentDefaults[idx] : undefined, rootSchema, formData, includeUndefinedValues);
     });
@@ -9438,13 +9465,13 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".genFromComponent{font-size:14px;line-height:1;word-wrap:break-word;word-break:break-word;padding:0;margin:0}.genFromComponent a,.genFromComponent h1,.genFromComponent h2,.genFromComponent h3,.genFromComponent li,.genFromComponent p,.genFromComponent ul{font-size:14px}.genFromComponent .genFormIcon{width:12px;height:12px;vertical-align:top}.genFromComponent .genFormBtn{display:inline-block;line-height:1;white-space:nowrap;cursor:pointer;background:#fff;border:1px solid #dcdfe6;color:#606266;-webkit-appearance:none;text-align:center;-webkit-box-sizing:border-box;box-sizing:border-box;outline:none;margin:0;-webkit-transition:.1s;transition:.1s;font-weight:500;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;padding:12px 20px;font-size:14px;border-radius:4px}.genFromComponent .genFormBtn.is-plain:focus,.genFromComponent .genFormBtn.is-plain:hover{background:#fff;border-color:#409eff;color:#409eff}.genFromComponent .hiddenWidget{display:none}.genFromComponent .fieldGroupWrap+.fieldGroupWrap .fieldGroupWrap_title{margin-top:20px}.genFromComponent .fieldGroupWrap_title{position:relative;display:block;width:100%;line-height:26px;margin-bottom:8px;font-size:15px;font-weight:700;border:0}.genFromComponent .fieldGroupWrap_des{font-size:12px;line-height:20px;margin-bottom:10px;color:#999}.genFromComponent .genFromWidget_des{padding:0;margin-top:0;margin-bottom:2px;font-size:12px;line-height:20px;color:#999;text-align:left}.genFromComponent .formItemErrorBox{margin:0 auto;color:#ff5757;padding-top:2px;position:absolute;top:100%;left:0;display:-webkit-box!important;line-height:16px;text-overflow:ellipsis;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:1;white-space:normal;font-size:12px;text-align:left}.genFromComponent .genFormIcon-qs{fill:#606266;vertical-align:middle;display:inline-block;width:16px;height:16px;margin-left:2px;margin-top:-2px;cursor:pointer}.genFromComponent .genFormItemRequired:before{content:\"*\";color:#f56c6c;margin-right:4px}.genFromComponent .appendCombining_box{margin-bottom:22px}.genFromComponent .appendCombining_box .appendCombining_box{margin-bottom:10px}.genFromComponent .appendCombining_box{padding:10px;background:hsla(0,0%,94.9%,.8);-webkit-box-shadow:0 3px 1px -2px rgba(0,0,0,.2),0 0 3px 1px rgba(0,0,0,.1);box-shadow:0 3px 1px -2px rgba(0,0,0,.2),0 0 3px 1px rgba(0,0,0,.1)}.genFromComponent .validateWidget{margin-bottom:0!important;width:100%!important;-ms-flex-preferred-size:100%!important;flex-basis:100%!important;padding:0!important}.genFromComponent .validateWidget .formItemErrorBox{padding:5px 0;position:relative}.genFromComponent .arrayField:not(.genFormItem){margin-bottom:22px}.genFromComponent .arrayField:not(.genFormItem) .arrayField{margin-bottom:10px}.genFromComponent .arrayOrderList{background:hsla(0,0%,94.9%,.8);-webkit-box-shadow:0 3px 1px -2px rgba(0,0,0,.2),0 0 3px 1px rgba(0,0,0,.1);box-shadow:0 3px 1px -2px rgba(0,0,0,.2),0 0 3px 1px rgba(0,0,0,.1)}.genFromComponent .arrayOrderList_item{position:relative;padding:25px 10px 12px;border-radius:2px;margin-bottom:6px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.genFromComponent .arrayOrderList_bottomAddBtn{text-align:right;padding:15px 10px;margin-bottom:10px}.genFromComponent .bottomAddBtn{width:40%;min-width:10px;max-width:180px}.genFromComponent .arrayListItem_content{padding-top:15px;-webkit-box-flex:1;-ms-flex:1;flex:1;margin:0 auto;-webkit-box-shadow:0 -1px 0 0 rgba(0,0,0,.05);box-shadow:0 -1px 0 0 rgba(0,0,0,.05)}.genFromComponent .arrayListItem_index,.genFromComponent .arrayListItem_operateTool{position:absolute;height:25px}.genFromComponent .arrayListItem_index{top:6px;line-height:18px;height:18px;padding:0 6px;background-color:rgba(0,0,0,.28);color:#fff;font-size:12px;border-radius:2px}.genFromComponent .arrayListItem_operateTool{width:75px;right:9px;top:-1px;text-align:right;font-size:0}.genFromComponent .arrayListItem_btn{vertical-align:top;display:inline-block;padding:6px;margin:0;font-size:0;-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none;border:none;cursor:pointer;text-align:center;background:transparent;color:#666}.genFromComponent .arrayListItem_btn:hover{opacity:.6}.genFromComponent .arrayListItem_btn[disabled]{color:#999;opacity:.3!important;cursor:not-allowed}.genFromComponent .arrayListItem_orderBtn-bottom,.genFromComponent .arrayListItem_orderBtn-top{background-color:#f0f9eb}.genFromComponent .arrayListItem_btn-delete{background-color:#fef0f0}.genFromComponent .formFooter_item{text-align:right;border-top:1px solid rgba(0,0,0,.08);padding-top:10px}.genFromComponent.formInlineFooter>.fieldGroupWrap{display:inline-block;margin-right:10px}.genFromComponent.formInline .genFormItem{display:inline-block;margin-right:10px;vertical-align:top}.genFromComponent.formInline .validateWidget{margin-right:0}.genFromComponent.formInline .formFooter_item{border-top:none;padding-top:0}.layoutColumn .layoutColumn_w100{width:100%!important;-ms-flex-preferred-size:100%!important;flex-basis:100%!important}.layoutColumn .fieldGroupWrap_box{width:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-direction:row;flex-direction:row;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-align:start;-ms-flex-align:start;align-items:flex-start;-webkit-box-pack:start;-ms-flex-pack:start;justify-content:flex-start;-ms-flex-line-pack:start;align-content:flex-start}.layoutColumn .fieldGroupWrap_box>div{width:100%;-ms-flex-preferred-size:100%;flex-basis:100%}.layoutColumn .fieldGroupWrap_box>.genFormItem{-webkit-box-flex:0;-ms-flex-positive:0;flex-grow:0;-ms-flex-negative:0;flex-shrink:0;-webkit-box-sizing:border-box;box-sizing:border-box;padding-right:10px}.layoutColumn.layoutColumn-1 .fieldGroupWrap_box>.genFormItem{padding-right:0}.layoutColumn.layoutColumn-2 .fieldGroupWrap_box>.genFormItem{width:50%;-ms-flex-preferred-size:50%;flex-basis:50%}.layoutColumn.layoutColumn-3 .fieldGroupWrap_box>.genFormItem{width:33.333%;-ms-flex-preferred-size:33.333%;flex-basis:33.333%}";
-styleInject(css_248z);
+var css_248z$1 = ".genFromComponent {\n    font-size: 14px;\n    line-height: 1;\n    word-wrap: break-word;\n    word-break: break-word;\n    padding: 0;\n    margin: 0;\n    a,\n    p,\n    li,\n    ul,\n    h1,\n    h2,\n    h3,\n    p {\n        font-size: 14px;\n    }\n    .genFormIcon {\n        width: 12px;\n        height: 12px;\n        vertical-align: top;\n    }\n    .genFormBtn {\n        display: inline-block;\n        line-height: 1;\n        white-space: nowrap;\n        cursor: pointer;\n        background: #fff;\n        border: 1px solid #dcdfe6;\n        color: #606266;\n        -webkit-appearance: none;\n        text-align: center;\n        box-sizing: border-box;\n        outline: none;\n        margin: 0;\n        transition: .1s;\n        font-weight: 500;\n        -moz-user-select: none;\n        -webkit-user-select: none;\n        -ms-user-select: none;\n        padding: 12px 20px;\n        font-size: 14px;\n        border-radius: 4px;\n        &.is-plain{\n            &:focus, &:hover {\n                background: #fff;\n                border-color: #409eff;\n                color: #409eff;\n            }\n        }\n    }\n    .hiddenWidget {\n        display: none;\n    }\n    .fieldGroupWrap+.fieldGroupWrap {\n        .fieldGroupWrap_title {\n            margin-top: 20px;\n        }\n    }\n    .fieldGroupWrap_title {\n        position: relative;\n        display: block;\n        width: 100%;\n        line-height: 26px;\n        margin-bottom: 8px;\n        font-size: 15px;\n        font-weight: bold;\n        border: 0;\n    }\n    .fieldGroupWrap_des {\n        font-size: 12px;\n        line-height: 20px;\n        margin-bottom: 10px;\n        color: rgb(153, 153, 153);\n    }\n    .genFromWidget_des {\n        padding: 0;\n        margin-top: 0;\n        margin-bottom: 2px;\n        font-size: 12px;\n        line-height: 20px;\n        color: #999;\n        text-align: left;\n    }\n    .formItemErrorBox {\n        margin: 0 auto;\n        color: #ff5757;\n        padding-top: 2px;\n        position: absolute;\n        top: 100%;\n        left: 0;\n        display: -webkit-box !important;\n        line-height: 16px;\n        text-overflow: ellipsis;\n        overflow: hidden;\n        -webkit-box-orient: vertical;\n        -webkit-line-clamp: 1;\n        white-space: normal;\n        font-size: 12px;\n        text-align: left;\n    }\n    .genFormIcon-qs {\n        fill: #606266;\n        vertical-align: middle;\n        display: inline-block;\n        width: 16px;\n        height: 16px;\n        margin-left: 2px;\n        margin-top: -2px;\n        cursor: pointer;\n    }\n    .genFormItemRequired {\n        &:before {\n            content: \"*\";\n            color: #f56c6c;\n            margin-right: 4px;\n        }\n    }\n\n    /* oneOf anyOf -  appendCombining_box*/\n    .appendCombining_box {\n        margin-bottom: 22px;\n        .appendCombining_box {\n            margin-bottom: 10px;\n        }\n        padding: 10px;\n        background: rgba(242,242,242,0.8);\n        box-shadow: 0 3px 1px -2px rgba(0,0,0,0.2), 0 0 3px 1px rgba(0,0,0,0.1);\n    }\n\n    /* validateWidget 单独的校验不属于输入框的*/\n    .validateWidget {\n        margin-bottom: 0 !important;\n        width: 100% !important;\n        flex-basis: 100% !important;\n        padding: 0 !important;\n        .formItemErrorBox {\n            padding: 5px 0;\n            position: relative;\n        }\n    }\n\n    /* type array */\n    .arrayField:not(.genFormItem){\n        margin-bottom: 22px;\n        .arrayField {\n            margin-bottom: 10px;\n        }\n    }\n    .arrayOrderList {\n        background: rgba(242,242,242,0.8);\n        box-shadow: 0 3px 1px -2px rgba(0,0,0,0.2), 0 0 3px 1px rgba(0,0,0,0.1);\n    }\n    .arrayOrderList_item {\n        position: relative;\n        padding: 25px 10px 12px;\n        border-radius: 2px;\n        margin-bottom: 6px;\n        display: flex;\n        align-items: center;\n    }\n    .arrayOrderList_bottomAddBtn {\n        text-align: right;\n        padding: 15px 10px;\n        margin-bottom: 10px;\n    }\n    .bottomAddBtn {\n        width: 40%;\n        min-width: 10px;\n        max-width: 180px;\n        /*box-shadow: 0 3px 1px -2px rgba(0,0,0,0.2), 0 2px 2px 1px rgba(0,0,0,0.1);*/\n    }\n    .arrayListItem_content {\n        padding-top: 15px;\n        flex: 1;\n        margin: 0 auto;\n        box-shadow: 0 -1px 0 0 rgba(0,0,0,0.05);\n    }\n\n    .arrayListItem_index, .arrayListItem_operateTool{\n        position: absolute;\n        height: 25px;\n    }\n    .arrayListItem_index {\n        top: 6px;\n        line-height: 18px;\n        height: 18px;\n        padding: 0 6px;\n        background-color: rgba(0,0,0,.28);\n        color: #fff;\n        font-size: 12px;\n        border-radius: 2px;\n    }\n    .arrayListItem_operateTool {\n        width: 75px;\n        right: 9px;\n        top: -1px;\n        text-align: right;\n        font-size: 0;\n    }\n    .arrayListItem_btn {\n        vertical-align: top;\n        display: inline-block;\n        padding: 6px;\n        margin: 0;\n        font-size: 0;\n        -webkit-appearance: none;\n        appearance: none;\n        outline: none;\n        border: none;\n        cursor: pointer;\n        text-align: center;\n        background: transparent;\n        color: #666;\n        &:hover {\n            opacity: 0.6;\n        }\n        &[disabled] {\n            color: #999999;\n            opacity: 0.3 !important;\n            cursor: not-allowed;\n        }\n    }\n    .arrayListItem_orderBtn-top {\n        background-color: #f0f9eb;\n    }\n    .arrayListItem_orderBtn-bottom {\n        background-color: #f0f9eb;\n    }\n    .arrayListItem_btn-delete {\n        background-color: #fef0f0;\n    }\n\n    .formFooter_item {\n        text-align: right;\n        border-top: 1px solid rgba(0, 0, 0, 0.08);\n        padding-top: 10px;\n    }\n\n    &.formInlineFooter {\n        &>.fieldGroupWrap{\n            display: inline-block;\n            margin-right: 10px;\n        }\n    }\n\n    /*.arrayListItem_content .genFormItem {\n        &:last-child {\n            margin-bottom: 0;\n        }\n    }*/\n    &.formInline {\n        .genFormItem {\n            display: inline-block;\n            margin-right: 10px;\n            vertical-align: top;\n        }\n        .validateWidget {\n            margin-right: 0;\n        }\n        .formFooter_item {\n            border-top: none;\n            padding-top: 0;\n        }\n    }\n}\n\n\n/* 适配多列布局 */\n:root {\n    --width-column-gutter : 10px;\n}\n\n.layoutColumn {\n    .layoutColumn_w100 {\n        width: 100% !important;\n        flex-basis: 100% !important;;\n    }\n    .fieldGroupWrap_box {\n        width: 100%;\n        display: flex;\n        flex-direction: row;\n        flex-wrap: wrap;\n        align-items: flex-start;\n        justify-content: flex-start;\n        align-content: flex-start;\n        &>div {\n            width: 100%;\n            flex-basis: 100%;\n        }\n        &>.genFormItem{\n            flex-grow: 0;\n            flex-shrink: 0;\n            box-sizing: border-box;\n            padding-right: var(--width-column-gutter);\n        }\n    }\n    &.layoutColumn-1 {\n        .fieldGroupWrap_box>.genFormItem {\n            padding-right: 0;\n        }\n    }\n    &.layoutColumn-2 {\n        .fieldGroupWrap_box>.genFormItem {\n            width: 50%;\n            flex-basis: 50%;\n        }\n    }\n    &.layoutColumn-3 {\n        .fieldGroupWrap_box>.genFormItem{\n            width: 33.333%;\n            flex-basis: 33.333%;\n        }\n    }\n}\n";
+styleInject(css_248z$1);
 
 /**
  * Created by Liu.Jun on 2020/4/16 10:47 下午.
  */
-var vueProps = {
+var vueProps$1 = {
   formFooter: {
     type: Object,
     default: function _default() {
@@ -9576,7 +9603,7 @@ var FormFooter = {
   }
 };
 
-var script = {
+var script$8 = {
   name: 'FieldGroupWrap',
   inject: ['genFormProvide'],
   props: {
@@ -9618,36 +9645,37 @@ var script = {
   }
 };
 
-var _hoisted_1 = {
+var _hoisted_1$5 = {
   class: "fieldGroupWrap"
 };
-var _hoisted_2 = {
+var _hoisted_2$5 = {
   key: 0,
   class: "fieldGroupWrap_title"
 };
-var _hoisted_3 = {
+var _hoisted_3$5 = ["innerHTML"];
+var _hoisted_4$1 = {
   class: "fieldGroupWrap_box"
 };
-function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createBlock("div", _hoisted_1, [$props.showTitle && $options.trueTitle ? (openBlock(), createBlock("h3", _hoisted_2, toDisplayString($options.trueTitle), 1
+function render$8(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", _hoisted_1$5, [$props.showTitle && $options.trueTitle ? (openBlock(), createElementBlock("h3", _hoisted_2$5, toDisplayString($options.trueTitle), 1
   /* TEXT */
-  )) : createCommentVNode("v-if", true), $props.showDescription && $props.description ? (openBlock(), createBlock("p", {
+  )) : createCommentVNode("v-if", true), $props.showDescription && $props.description ? (openBlock(), createElementBlock("p", {
     key: 1,
     class: "fieldGroupWrap_des",
     innerHTML: $props.description
   }, null, 8
   /* PROPS */
-  , ["innerHTML"])) : createCommentVNode("v-if", true), createVNode("div", _hoisted_3, [renderSlot(_ctx.$slots, "default")])]);
+  , _hoisted_3$5)) : createCommentVNode("v-if", true), createElementVNode("div", _hoisted_4$1, [renderSlot(_ctx.$slots, "default")])]);
 }
 
-script.render = render;
-script.__file = "utils/components/FieldGroupWrap.vue";
+script$8.render = render$8;
+script$8.__file = "node_modules/@lljj/vjsf-utils/components/FieldGroupWrap.vue";
 
 /**
  * Created by Liu.Jun on 2020/4/22 18:58.
  */
 // 递归参数，统一props
-var vueProps$1 = {
+var vueProps = {
   formProps: {
     type: null
   },
@@ -9720,67 +9748,70 @@ var vueProps$1 = {
   }
 };
 
-var _hoisted_1$1 = {
+var _hoisted_1$4 = {
   class: "genFormIcon genFormIcon-down",
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 1024 1024"
 };
 
-var _hoisted_2$1 = /*#__PURE__*/createVNode("path", {
+var _hoisted_2$4 = /*#__PURE__*/createElementVNode("path", {
   d: "M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
 }, null, -1
 /* HOISTED */
 );
 
-function render$1(_ctx, _cache) {
-  return openBlock(), createBlock("svg", _hoisted_1$1, [_hoisted_2$1]);
+var _hoisted_3$4 = [_hoisted_2$4];
+function render$7(_ctx, _cache) {
+  return openBlock(), createElementBlock("svg", _hoisted_1$4, _hoisted_3$4);
 }
 
-var script$1 = {};
-script$1.render = render$1;
-script$1.__file = "utils/icons/IconCaretDown.vue";
+var script$7 = {};
+script$7.render = render$7;
+script$7.__file = "node_modules/@lljj/vjsf-utils/icons/IconCaretDown.vue";
 
-var _hoisted_1$2 = {
+var _hoisted_1$3 = {
   class: "genFormIcon genFormIcon-up",
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 1024 1024"
 };
 
-var _hoisted_2$2 = /*#__PURE__*/createVNode("path", {
+var _hoisted_2$3 = /*#__PURE__*/createElementVNode("path", {
   d: "M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
 }, null, -1
 /* HOISTED */
 );
 
-function render$2(_ctx, _cache) {
-  return openBlock(), createBlock("svg", _hoisted_1$2, [_hoisted_2$2]);
+var _hoisted_3$3 = [_hoisted_2$3];
+function render$6(_ctx, _cache) {
+  return openBlock(), createElementBlock("svg", _hoisted_1$3, _hoisted_3$3);
 }
 
-var script$2 = {};
-script$2.render = render$2;
-script$2.__file = "utils/icons/IconCaretUp.vue";
+var script$6 = {};
+script$6.render = render$6;
+script$6.__file = "node_modules/@lljj/vjsf-utils/icons/IconCaretUp.vue";
 
-var _hoisted_1$3 = {
+var _hoisted_1$2 = {
   class: "genFormIcon genFormIcon-close",
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 1024 1024"
 };
 
-var _hoisted_2$3 = /*#__PURE__*/createVNode("path", {
+var _hoisted_2$2 = /*#__PURE__*/createElementVNode("path", {
   d: "M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1\n            191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0\n            0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
 }, null, -1
 /* HOISTED */
 );
 
-function render$3(_ctx, _cache) {
-  return openBlock(), createBlock("svg", _hoisted_1$3, [_hoisted_2$3]);
+var _hoisted_3$2 = [_hoisted_2$2];
+function render$5(_ctx, _cache) {
+  return openBlock(), createElementBlock("svg", _hoisted_1$2, _hoisted_3$2);
 }
 
-var script$3 = {};
-script$3.render = render$3;
-script$3.__file = "utils/icons/IconClose.vue";
+var script$5 = {};
+script$5.render = render$5;
+script$5.__file = "node_modules/@lljj/vjsf-utils/icons/IconClose.vue";
 
-var _hoisted_1$4 = {
+var _hoisted_1$1 = {
   class: "genFormIcon genFormIcon-plus",
   t: "1551322312294",
   viewBox: "0 0 1024 1024",
@@ -9792,47 +9823,49 @@ var _hoisted_1$4 = {
   height: "200"
 };
 
-var _hoisted_2$4 = /*#__PURE__*/createVNode("path", {
+var _hoisted_2$1 = /*#__PURE__*/createElementVNode("path", {
   d: "M474 152m8 0l60 0q8 0 8 8l0 704q0 8-8 8l-60 0q-8 0-8-8l0-704q0-8 8-8Z",
   "p-id": "10298"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_3$1 = /*#__PURE__*/createVNode("path", {
+var _hoisted_3$1 = /*#__PURE__*/createElementVNode("path", {
   d: "M168 474m8 0l672 0q8 0 8 8l0 60q0 8-8 8l-672 0q-8 0-8-8l0-60q0-8 8-8Z",
   "p-id": "10299"
 }, null, -1
 /* HOISTED */
 );
 
+var _hoisted_4 = [_hoisted_2$1, _hoisted_3$1];
 function render$4(_ctx, _cache) {
-  return openBlock(), createBlock("svg", _hoisted_1$4, [_hoisted_2$4, _hoisted_3$1]);
+  return openBlock(), createElementBlock("svg", _hoisted_1$1, _hoisted_4);
 }
 
 var script$4 = {};
 script$4.render = render$4;
-script$4.__file = "utils/icons/IconPlus.vue";
+script$4.__file = "node_modules/@lljj/vjsf-utils/icons/IconPlus.vue";
 
-var _hoisted_1$5 = {
+var _hoisted_1 = {
   class: "genFormIcon genFormIcon-qs",
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 1024 1024"
 };
 
-var _hoisted_2$5 = /*#__PURE__*/createVNode("path", {
+var _hoisted_2 = /*#__PURE__*/createElementVNode("path", {
   d: "M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 708c-22.1\n            0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm62.9-219.5a48.3 48.3 0 0\n            0-30.9 44.8V620c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8v-21.5c0-23.1 6.7-45.9 19.9-64.9 12.9-18.6 30.9-32.8\n            52.1-40.9 34-13.1 56-41.6 56-72.7 0-44.1-43.1-80-96-80s-96 35.9-96 80v7.6c0 4.4-3.6\n            8-8 8h-48c-4.4 0-8-3.6-8-8V420c0-39.3 17.2-76 48.4-103.3C430.4 290.4 470 276 512 276s81.6 14.5 111.6\n            40.7C654.8 344 672 380.7 672 420c0 57.8-38.1 109.8-97.1 132.5z"
 }, null, -1
 /* HOISTED */
 );
 
-function render$5(_ctx, _cache) {
-  return openBlock(), createBlock("svg", _hoisted_1$5, [_hoisted_2$5]);
+var _hoisted_3 = [_hoisted_2];
+function render$3(_ctx, _cache) {
+  return openBlock(), createElementBlock("svg", _hoisted_1, _hoisted_3);
 }
 
-var script$5 = {};
-script$5.render = render$5;
-script$5.__file = "utils/icons/IconQuestion.vue";
+var script$3 = {};
+script$3.render = render$3;
+script$3.__file = "node_modules/@lljj/vjsf-utils/icons/IconQuestion.vue";
 
 var Widget = {
   name: 'Widget',
@@ -9979,7 +10012,7 @@ var Widget = {
     var genFormProvide = inject('genFormProvide');
     var widgetValue = computed({
       get: function get() {
-        if (props.isFormData) return getPathVal(props.rootFormData, props.curNodePath);
+        if (props.isFormData) return getPathVal$1(props.rootFormData, props.curNodePath);
         return props.curValue;
       },
       set: function set(value) {
@@ -10036,7 +10069,7 @@ var Widget = {
           return descriptionVNode;
         },
         reference: function reference() {
-          return h(script$5);
+          return h(script$3);
         }
       }) : null; // form-item style
 
@@ -10136,7 +10169,7 @@ var Widget = {
                   props.onChange({
                     curVal: event,
                     preVal: preVal,
-                    parentFormData: getPathVal(props.rootFormData, props.curNodePath, 1),
+                    parentFormData: getPathVal$1(props.rootFormData, props.curNodePath, 1),
                     rootFormData: props.rootFormData
                   });
                 }
@@ -10165,7 +10198,7 @@ var Widget = {
 
 var ObjectField = {
   name: 'ObjectField',
-  props: vueProps$1,
+  props: vueProps,
   setup: function setup(props) {
     // required
     var isRequired = function isRequired(name) {
@@ -10191,7 +10224,7 @@ var ObjectField = {
 
           isDependency = isDependency || tempDependency; // 当前需要依赖
 
-          return tempDependency && getPathVal(props.rootFormData, props.curNodePath)[key] !== undefined;
+          return tempDependency && getPathVal$1(props.rootFormData, props.curNodePath)[key] !== undefined;
         });
       }
 
@@ -10241,7 +10274,7 @@ var ObjectField = {
           curNodePath: computedCurPath(curNodePath, name)
         }));
       });
-      return h(script, _objectSpread2({
+      return h(script$8, _objectSpread2({
         title: title,
         description: description,
         showTitle: showTitle,
@@ -10279,7 +10312,7 @@ var ObjectField = {
 
 var StringField = {
   name: 'StringField',
-  props: vueProps$1,
+  props: vueProps,
   setup: function setup(props, _ref) {
     var attrs = _ref.attrs;
     var widgetConfig = computed(function () {
@@ -10311,7 +10344,7 @@ var StringField = {
 
 var NumberField = {
   name: 'NumberField',
-  props: vueProps$1,
+  props: vueProps,
   setup: function setup(props, _ref) {
     var attrs = _ref.attrs;
     return function () {
@@ -10322,7 +10355,7 @@ var NumberField = {
 
 var IntegerField = {
   name: 'IntegerField',
-  props: vueProps$1,
+  props: vueProps,
   setup: function setup(props, _ref) {
     var attrs = _ref.attrs;
     return function () {
@@ -10333,7 +10366,7 @@ var IntegerField = {
 
 var BooleanField = {
   name: 'BooleanField',
-  props: vueProps$1,
+  props: vueProps,
   setup: function setup(props, _ref) {
     var attrs = _ref.attrs;
     return function () {
@@ -10478,7 +10511,7 @@ var ArrayOrderList = {
               }
             });
           }
-        }, [h(script$2)]), h('button', {
+        }, [h(script$6)]), h('button', {
           // 配置不可排序不显示排序按钮
           style: _objectSpread2({}, !props.sortable ? {
             display: 'none'
@@ -10497,7 +10530,7 @@ var ArrayOrderList = {
               }
             });
           }
-        }, [h(script$1)]), h('button', {
+        }, [h(script$7)]), h('button', {
           // 配置不可移除不显示移除按钮
           style: _objectSpread2({}, !props.removable ? {
             display: 'none'
@@ -10516,7 +10549,7 @@ var ArrayOrderList = {
               }
             });
           }
-        }, [h(script$3)])]), h('div', {
+        }, [h(script$5)])]), h('div', {
           class: {
             arrayListItem_content: true
           }
@@ -10551,7 +10584,7 @@ var ArrayOrderList = {
 
 var ArrayFieldNormal = {
   name: 'ArrayFieldNormal',
-  props: _objectSpread2(_objectSpread2({}, vueProps$1), {}, {
+  props: _objectSpread2(_objectSpread2({}, vueProps), {}, {
     itemsFormData: {
       type: Array
     }
@@ -10603,7 +10636,7 @@ var ArrayFieldNormal = {
           }))
         };
       });
-      return h(script, {
+      return h(script$8, {
         title: title,
         description: description,
         showTitle: showTitle,
@@ -10632,7 +10665,7 @@ var ArrayFieldNormal = {
 
 var ArrayFieldMultiSelect = {
   name: 'ArrayFieldMultiSelect',
-  props: _objectSpread2({}, vueProps$1),
+  props: _objectSpread2({}, vueProps),
   setup: function setup(props, _ref) {
     var attrs = _ref.attrs;
     return function () {
@@ -10669,7 +10702,7 @@ var ArrayFieldMultiSelect = {
 
 var ArrayFieldTuple = {
   name: 'ArrayFieldTuple',
-  props: _objectSpread2(_objectSpread2({}, vueProps$1), {}, {
+  props: _objectSpread2(_objectSpread2({}, vueProps), {}, {
     itemsFormData: {
       type: Array,
       default: function _default() {
@@ -10772,7 +10805,7 @@ var ArrayFieldTuple = {
 
       var trueAddable = (addable === undefined ? true : addable) && allowAdditionalItems(props.schema); // 默认循环固定配置的数据 长度外的使用ArrayOrderList渲染
 
-      return h(script, _objectSpread2(_objectSpread2({
+      return h(script$8, _objectSpread2(_objectSpread2({
         title: title,
         description: description,
         showTitle: showTitle,
@@ -10810,7 +10843,7 @@ var ArrayFieldTuple = {
 
 var ArrayFieldSpecialFormat = {
   name: 'ArrayFieldSpecialFormat',
-  props: vueProps$1,
+  props: vueProps,
   setup: function setup(props, _ref) {
     var attrs = _ref.attrs;
     var schema = props.schema,
@@ -10834,13 +10867,13 @@ var ArrayFieldSpecialFormat = {
 
 var ArrayField = {
   name: 'ArrayField',
-  props: vueProps$1,
+  props: vueProps,
   setup: function setup(props) {
     // 获取当前的值
     var getCurFormData = function getCurFormData() {
       var rootFormData = props.rootFormData,
           curNodePath = props.curNodePath;
-      var value = getPathVal(rootFormData, curNodePath);
+      var value = getPathVal$1(rootFormData, curNodePath);
       if (Array.isArray(value)) return value;
       console.error('error: type array，值必须为 array 类型');
       return [];
@@ -11030,9 +11063,10 @@ var ArrayField = {
   }
 };
 
+var _excluded$4 = ["title", "description", "properties"];
 var SelectLinkageField = {
   name: 'SelectLinkageField',
-  props: _objectSpread2(_objectSpread2({}, vueProps$1), {}, {
+  props: _objectSpread2(_objectSpread2({}, vueProps), {}, {
     combiningType: {
       type: String,
       default: 'anyOf' // anyOf oneOf
@@ -11050,7 +11084,7 @@ var SelectLinkageField = {
     }; // 当前选中 option 项
 
 
-    var curSelectIndex = ref$1(computedCurSelectIndexByFormData(getPathVal(props.rootFormData, props.curNodePath))); // 下拉选项 VNode
+    var curSelectIndex = ref$1(computedCurSelectIndexByFormData(getPathVal$1(props.rootFormData, props.curNodePath))); // 下拉选项 VNode
 
     var getSelectBoxVNode = function getSelectBoxVNode() {
       // 下拉选项参数
@@ -11108,7 +11142,7 @@ var SelectLinkageField = {
 
 
     watch(curSelectIndex, function (newVal, oldVal) {
-      var curFormData = getPathVal(props.rootFormData, props.curNodePath); // 计算出 新选项默认值
+      var curFormData = getPathVal$1(props.rootFormData, props.curNodePath); // 计算出 新选项默认值
 
       var newOptionData = getDefaultFormState(props.selectList[newVal], undefined, props.rootSchema);
       var hasOwn = Object.prototype.hasOwnProperty; // 移除旧key
@@ -11218,7 +11252,7 @@ var SelectLinkageField = {
             _curSelectSchema.title;
             _curSelectSchema.description;
             _curSelectSchema.properties;
-            var optionSchema = _objectWithoutProperties(_curSelectSchema, ["title", "description", "properties"]); // object 原始项渲染也需要合并anyOf的内容
+            var optionSchema = _objectWithoutProperties(_curSelectSchema, _excluded$4); // object 原始项渲染也需要合并anyOf的内容
 
 
         var origSchema = Object.assign({}, props.schema, optionSchema);
@@ -11302,10 +11336,11 @@ var FIELDS_MAPS = {
   anyOf: AnyOfField,
   oneOf: OneOfField
 };
+var FIELDS_MAP = FIELDS_MAPS;
 
 var SchemaField = {
   name: 'SchemaField',
-  props: vueProps$1,
+  props: vueProps,
   setup: function setup(props) {
     return function () {
       var _class3;
@@ -11321,7 +11356,7 @@ var SchemaField = {
 
       if (Object.keys(schema).length === 0) return null; // 获取节点Ui配置渲染field组件
 
-      var _getUiField = getUiField(FIELDS_MAPS, curProps),
+      var _getUiField = getUiField(FIELDS_MAP, curProps),
           fieldComponent = _getUiField.field,
           fieldProps = _getUiField.fieldProps; // hidden
 
@@ -11338,7 +11373,7 @@ var SchemaField = {
         var _class;
 
         // anyOf
-        return h(resolveComponent(FIELDS_MAPS.anyOf), _objectSpread2({
+        return h(resolveComponent(FIELDS_MAP.anyOf), _objectSpread2({
           class: (_class = {}, _defineProperty(_class, "".concat(pathClassName, "-anyOf"), true), _defineProperty(_class, "fieldItem", true), _defineProperty(_class, "anyOfField", true), _class)
         }, curProps));
       }
@@ -11347,7 +11382,7 @@ var SchemaField = {
         var _class2;
 
         // oneOf
-        return h(resolveComponent(FIELDS_MAPS.oneOf), _objectSpread2({
+        return h(resolveComponent(FIELDS_MAP.oneOf), _objectSpread2({
           class: (_class2 = {}, _defineProperty(_class2, "".concat(pathClassName, "-oneOf"), true), _defineProperty(_class2, "fieldItem", true), _defineProperty(_class2, "oneOfField", true), _class2)
         }, curProps));
       }
@@ -11360,11 +11395,12 @@ var SchemaField = {
   }
 };
 
+var _excluded$3 = ["layoutColumn", "inlineFooter", "inline"];
 function createForm() {
   var globalOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var Form = {
     name: 'VueForm',
-    props: vueProps,
+    props: vueProps$1,
     emits: ['update:modelValue', 'change', 'cancel', 'submit', 'validation-failed', 'form-mounted'],
     setup: function setup(props, _ref) {
       var slots = _ref.slots,
@@ -11490,7 +11526,7 @@ function createForm() {
             layoutColumn = _props$formProps$layo === void 0 ? 1 : _props$formProps$layo,
             inlineFooter = _props$formProps.inlineFooter,
             inline = _props$formProps.inline,
-            otherFormProps = _objectWithoutProperties(_props$formProps, ["layoutColumn", "inlineFooter", "inline"]);
+            otherFormProps = _objectWithoutProperties(_props$formProps, _excluded$3);
 
         var schemaProps = {
           schema: props.schema,
@@ -11540,7 +11576,7 @@ function createForm() {
   return Form;
 }
 
-var script$6 = {
+var script$2 = {
   name: 'CheckboxesWidget',
   props: {
     enumOptions: {
@@ -11552,14 +11588,14 @@ var script$6 = {
   }
 };
 
-function render$6(_ctx, _cache, $props, $setup, $data, $options) {
+function render$2(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_el_checkbox = resolveComponent$1("el-checkbox");
 
   var _component_el_checkbox_group = resolveComponent$1("el-checkbox-group");
 
-  return openBlock(), createBlock(_component_el_checkbox_group, _ctx.$attrs, {
+  return openBlock(), createBlock(_component_el_checkbox_group, normalizeProps(guardReactiveProps(_ctx.$attrs)), {
     default: withCtx(function () {
-      return [(openBlock(true), createBlock(Fragment, null, renderList($props.enumOptions, function (item, index) {
+      return [(openBlock(true), createElementBlock(Fragment, null, renderList($props.enumOptions, function (item, index) {
         return openBlock(), createBlock(_component_el_checkbox, {
           key: index,
           label: item.value
@@ -11587,10 +11623,10 @@ function render$6(_ctx, _cache, $props, $setup, $data, $options) {
   );
 }
 
-script$6.render = render$6;
-script$6.__file = "src/config/widgets/CheckboxesWidget/index.vue";
+script$2.render = render$2;
+script$2.__file = "src/config/widgets/CheckboxesWidget/index.vue";
 
-var script$7 = {
+var script$1 = {
   name: 'RadioWidget',
   props: {
     enumOptions: {
@@ -11602,14 +11638,14 @@ var script$7 = {
   }
 };
 
-function render$7(_ctx, _cache, $props, $setup, $data, $options) {
+function render$1(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_el_radio = resolveComponent$1("el-radio");
 
   var _component_el_radio_group = resolveComponent$1("el-radio-group");
 
-  return openBlock(), createBlock(_component_el_radio_group, _ctx.$attrs, {
+  return openBlock(), createBlock(_component_el_radio_group, normalizeProps(guardReactiveProps(_ctx.$attrs)), {
     default: withCtx(function () {
-      return [(openBlock(true), createBlock(Fragment, null, renderList($props.enumOptions, function (item, index) {
+      return [(openBlock(true), createElementBlock(Fragment, null, renderList($props.enumOptions, function (item, index) {
         return openBlock(), createBlock(_component_el_radio, {
           key: index,
           label: item.value
@@ -11637,10 +11673,10 @@ function render$7(_ctx, _cache, $props, $setup, $data, $options) {
   );
 }
 
-script$7.render = render$7;
-script$7.__file = "src/config/widgets/RadioWidget/index.vue";
+script$1.render = render$1;
+script$1.__file = "src/config/widgets/RadioWidget/index.vue";
 
-var script$8 = {
+var script = {
   name: 'SelectWidget',
   props: {
     enumOptions: {
@@ -11652,14 +11688,14 @@ var script$8 = {
   }
 };
 
-function render$8(_ctx, _cache, $props, $setup, $data, $options) {
+function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_el_option = resolveComponent$1("el-option");
 
   var _component_el_select = resolveComponent$1("el-select");
 
-  return openBlock(), createBlock(_component_el_select, _ctx.$attrs, {
+  return openBlock(), createBlock(_component_el_select, normalizeProps(guardReactiveProps(_ctx.$attrs)), {
     default: withCtx(function () {
-      return [(openBlock(true), createBlock(Fragment, null, renderList($props.enumOptions, function (item, index) {
+      return [(openBlock(true), createElementBlock(Fragment, null, renderList($props.enumOptions, function (item, index) {
         return openBlock(), createBlock(_component_el_option, {
           key: index,
           label: item.label,
@@ -11679,8 +11715,10 @@ function render$8(_ctx, _cache, $props, $setup, $data, $options) {
   );
 }
 
-script$8.render = render$8;
-script$8.__file = "src/config/widgets/SelectWidget/index.vue";
+script.render = render;
+script.__file = "src/config/widgets/SelectWidget/index.vue";
+
+var _excluded$2 = ["isNumberValue", "isRange"];
 
 function isEmptyValue(value) {
   return value === null || value === '' || Array.isArray(value) && value.every(function (item) {
@@ -11697,7 +11735,7 @@ var formatDateStr = function formatDateStr(dateString) {
   return "".concat(year, "-").concat(month, "-").concat(day);
 };
 
-var DatePickerWidget = {
+var DatePickerWidget$1 = {
   name: 'DatePickerWidget',
   inheritAttrs: false,
   setup: function setup(props, _ref) {
@@ -11707,7 +11745,7 @@ var DatePickerWidget = {
       var _ref2 = attrs || {},
           isNumberValue = _ref2.isNumberValue,
           isRange = _ref2.isRange,
-          otherProps = _objectWithoutProperties(_ref2, ["isNumberValue", "isRange"]);
+          otherProps = _objectWithoutProperties(_ref2, _excluded$2);
 
       return h(resolveComponent('el-date-picker'), _objectSpread2(_objectSpread2({
         type: isRange ? 'daterange' : 'date'
@@ -11730,7 +11768,8 @@ var DatePickerWidget = {
   }
 };
 
-var DateTimePickerWidget = {
+var _excluded$1 = ["isNumberValue", "isRange"];
+var DateTimePickerWidget$1 = {
   name: 'DateTimePickerWidget',
   inheritAttrs: false,
   setup: function setup(props, _ref) {
@@ -11751,7 +11790,7 @@ var DateTimePickerWidget = {
       var _ref2 = attrs || {},
           isNumberValue = _ref2.isNumberValue,
           isRange = _ref2.isRange,
-          otherProps = _objectWithoutProperties(_ref2, ["isNumberValue", "isRange"]);
+          otherProps = _objectWithoutProperties(_ref2, _excluded$1);
 
       return h(resolveComponent('el-date-picker'), _objectSpread2(_objectSpread2({
         type: isRange ? 'datetimerange' : 'datetime'
@@ -11798,7 +11837,7 @@ var formatTimeObj = function formatTimeObj(timeStr) {
   return undefined;
 };
 
-var TimePickerWidget = {
+var TimePickerWidget$1 = {
   name: 'TimePickerWidget',
   inheritAttrs: false,
   props: {
@@ -11975,12 +12014,12 @@ var UploadWidget = {
  * Created by Liu.Jun on 2020/5/17 10:41 下午.
  */
 var widgetComponents = {
-  CheckboxesWidget: script$6,
-  RadioWidget: script$7,
-  SelectWidget: script$8,
-  TimePickerWidget: TimePickerWidget,
-  DatePickerWidget: DatePickerWidget,
-  DateTimePickerWidget: DateTimePickerWidget,
+  CheckboxesWidget: script$2,
+  RadioWidget: script$1,
+  SelectWidget: script,
+  TimePickerWidget: TimePickerWidget$1,
+  DatePickerWidget: DatePickerWidget$1,
+  DateTimePickerWidget: DateTimePickerWidget$1,
   UploadWidget: UploadWidget
 };
 
@@ -11990,9 +12029,9 @@ var widgetComponents = {
 var CheckboxesWidget = widgetComponents.CheckboxesWidget,
     RadioWidget = widgetComponents.RadioWidget,
     SelectWidget = widgetComponents.SelectWidget,
-    TimePickerWidget$1 = widgetComponents.TimePickerWidget,
-    DatePickerWidget$1 = widgetComponents.DatePickerWidget,
-    DateTimePickerWidget$1 = widgetComponents.DateTimePickerWidget;
+    TimePickerWidget = widgetComponents.TimePickerWidget,
+    DatePickerWidget = widgetComponents.DatePickerWidget,
+    DateTimePickerWidget = widgetComponents.DateTimePickerWidget;
 var WIDGET_MAP = {
   types: {
     boolean: 'el-switch',
@@ -12002,11 +12041,11 @@ var WIDGET_MAP = {
   },
   formats: {
     color: 'el-color-picker',
-    time: TimePickerWidget$1,
+    time: TimePickerWidget,
     // 20:20:39+00:00
-    date: DatePickerWidget$1,
+    date: DatePickerWidget,
     // 2018-11-13
-    'date-time': DateTimePickerWidget$1 // 2018-11-13T20:20:39+00:00
+    'date-time': DateTimePickerWidget // 2018-11-13T20:20:39+00:00
 
   },
   common: {
@@ -12017,9 +12056,10 @@ var WIDGET_MAP = {
   widgetComponents: widgetComponents
 };
 
-var css_248z$1 = ".genFromComponent.el-form--label-top .el-form-item__label{line-height:26px;padding-bottom:6px;font-size:14px}.genFromComponent .el-checkbox,.genFromComponent .el-color-picker{vertical-align:top}";
-styleInject(css_248z$1);
+var css_248z = ".genFromComponent.el-form--label-top .el-form-item__label{line-height:26px;padding-bottom:6px;font-size:14px}.genFromComponent .el-checkbox,.genFromComponent .el-color-picker{vertical-align:top}";
+styleInject(css_248z);
 
+var _excluded = ["setFormRef"];
 var globalOptions = {
   WIDGET_MAP: WIDGET_MAP,
   COMPONENT_MAP: {
@@ -12039,7 +12079,7 @@ var globalOptions = {
         return function () {
           // eslint-disable-next-line no-unused-vars
           attrs.setFormRef;
-              var otherAttrs = _objectWithoutProperties(attrs, ["setFormRef"]);
+              var otherAttrs = _objectWithoutProperties(attrs, _excluded);
 
           return h(resolveComponent('el-form'), _objectSpread2({
             ref: formRef
@@ -12060,5 +12100,4 @@ var globalOptions = {
 };
 var JsonSchemaForm = createForm(globalOptions);
 
-export default JsonSchemaForm;
-export { SchemaField, vueProps$1 as fieldProps, formUtils, getDefaultFormState, globalOptions, i18n, validate$2 as schemaValidate, vue3Utils as vueUtils };
+export { SchemaField, JsonSchemaForm as default, vueProps as fieldProps, formUtils, getDefaultFormState, globalOptions, i18n, validate as schemaValidate, vue3Utils as vueUtils };

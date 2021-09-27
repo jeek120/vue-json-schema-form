@@ -25,6 +25,7 @@ import AnyOfField from './fields/combiningSchemas/AnyOfField';
 
 // eslint-disable-next-line import/no-cycle
 import OneOfField from './fields/combiningSchemas/OneOfField';
+import TableField from './fields/TableField';
 
 // 默认类型使用field映射关系
 const FIELDS_MAPS = {
@@ -34,6 +35,7 @@ const FIELDS_MAPS = {
     number: NumberField,
     object: ObjectField,
     string: StringField,
+    table: TableField,
     null: {
         render() {
             return null;

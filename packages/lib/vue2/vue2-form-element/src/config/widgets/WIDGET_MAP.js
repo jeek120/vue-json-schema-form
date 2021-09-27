@@ -7,6 +7,7 @@
 import widgetComponents from './index';
 
 const {
+    TableWidget,
     CheckboxesWidget,
     RadioWidget,
     SelectWidget,
@@ -32,6 +33,7 @@ export default {
         select: SelectWidget,
         radioGroup: RadioWidget,
         checkboxGroup: CheckboxesWidget,
+        table: TableWidget,
     },
     widgetComponents
 };

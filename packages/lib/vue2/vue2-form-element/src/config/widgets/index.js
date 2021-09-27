@@ -2,6 +2,7 @@
  * Created by Liu.Jun on 2020/5/17 10:41 下午.
  */
 
+import TableWidget from './TableWidget';
 import CheckboxesWidget from './CheckboxesWidget';
 import RadioWidget from './RadioWidget';
 import SelectWidget from './SelectWidget';
@@ -21,6 +22,7 @@ import UploadWidget from './UploadWidget';
 
 
 const widgetComponents = {
+    TableWidget,
     CheckboxesWidget,
     RadioWidget,
     SelectWidget,

@@ -2,10 +2,10 @@
  * Created by Liu.Jun on 2020/4/20 9:55 下午.
  */
 
-import { getUiField, isSelect, isHiddenWidget } from '@lljj/vjsf-utils/formUtils';
-import { nodePath2ClassName } from '@lljj/vjsf-utils/vueUtils';
-import { lowerCase } from '@lljj/vjsf-utils/utils';
-import retrieveSchema from '@lljj/vjsf-utils/schema/retriev';
+import { getUiField, isSelect, isHiddenWidget } from 'vjsf-utils/formUtils';
+import { nodePath2ClassName } from 'vjsf-utils/vueUtils';
+import { lowerCase } from 'vjsf-utils/utils';
+import retrieveSchema from 'vjsf-utils/schema/retriev';
 import FIELDS_MAP from '../../FIELDS_MAP';
 import vueProps from '../props';
 
@@ -14,6 +14,7 @@ export default {
     props: vueProps,
     functional: true,
     render(h, context) {
+        console.error('---------  core-> SchemaField.render()-------')
         const props = context.props;
         const { rootSchema } = props;
 

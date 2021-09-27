@@ -6,11 +6,11 @@
 import Vue from 'vue';
 
 // 生成form表单默认数据
-import getDefaultFormState from '@lljj/vjsf-utils/schema/getDefaultFormState';
-import { deepEquals } from '@lljj/vjsf-utils/utils';
+import getDefaultFormState from 'vjsf-utils/schema/getDefaultFormState';
+import { deepEquals } from 'vjsf-utils/utils';
 
 // 基础公共样式
-import '@lljj/vjsf-utils/style/baseForm.css';
+import 'vjsf-utils/style/baseForm.css';
 
 import vueProps from './props';
 
@@ -26,6 +26,7 @@ export {
 };
 
 export default function createForm(globalOptions = {}) {
+    console.log('-------------- core-> createForm--------------');
     // global components
     if (globalOptions.WIDGET_MAP.widgetComponents) {
         Object.entries(globalOptions.WIDGET_MAP.widgetComponents).forEach(([key, value]) => Vue.component(key, value));
@@ -74,6 +75,7 @@ export default function createForm(globalOptions = {}) {
 
             // 用于初始化了formData，监听变更是否重新计算 formData
             schema(newVal, oldVal) {
+                console.log('------ core->index.js watch(schema change)');
                 this.willReceiveProps(newVal, oldVal);
             },
             value(newVal, oldVal) {

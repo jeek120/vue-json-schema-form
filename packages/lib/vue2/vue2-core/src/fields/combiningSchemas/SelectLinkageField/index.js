@@ -4,18 +4,18 @@
 
 import {
     getPathVal, setPathVal, deletePathVal, nodePath2ClassName
-} from '@lljj/vjsf-utils/vueUtils';
+} from 'vjsf-utils/vueUtils';
 import {
     isEmptyObject, filterObject, isObject, getSchemaType
-} from '@lljj/vjsf-utils/utils';
+} from 'vjsf-utils/utils';
 
 import {
     getWidgetConfig, getUiOptions, getUserErrOptions
-} from '@lljj/vjsf-utils/formUtils';
+} from 'vjsf-utils/formUtils';
 
-import retrieveSchema from '@lljj/vjsf-utils/schema/retriev';
-import getDefaultFormState from '@lljj/vjsf-utils/schema/getDefaultFormState';
-import { getMatchingOption } from '@lljj/vjsf-utils/schema/validate';
+import retrieveSchema from 'vjsf-utils/schema/retriev';
+import getDefaultFormState from 'vjsf-utils/schema/getDefaultFormState';
+import { getMatchingOption } from 'vjsf-utils/schema/validate';
 
 import vueProps from '../../props';
 import Widget from '../../../components/Widget';

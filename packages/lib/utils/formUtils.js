@@ -72,6 +72,7 @@ export function getUiField(FIELDS_MAP, {
     schema = {},
     uiSchema = {},
 }) {
+    debugger;
     const field = schema['ui:field'] || uiSchema['ui:field'];
 
     // vue 组件，或者已注册的组件名
@@ -99,7 +100,7 @@ export function getUiField(FIELDS_MAP, {
     }
 
     // 不支持的类型
-    throw new Error(`不支持的field类型 ${schema.type}`);
+    throw new Error(`不支持的field类型1 ${schema.type}`);
 }
 
 // 解析用户配置的 uiSchema options
