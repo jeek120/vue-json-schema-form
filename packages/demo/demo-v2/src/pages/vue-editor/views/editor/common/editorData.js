@@ -2,7 +2,7 @@
  * Created by Liu.Jun on 2020/3/31 11:30 上午.
  */
 
-import { getDefaultFormState } from 'vue-json-schema-form';
+import { getDefaultFormState } from '@goodgeek/vue-json-schema-form';
 import { genId } from 'demo-common/utils/id';
 
 function isEmptyObject(obj) {

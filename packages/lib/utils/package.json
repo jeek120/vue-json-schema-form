@@ -1,6 +1,6 @@
 {
-    "name": "vjsf-utils",
-    "version": "1.9.2",
+    "name": "@goodgeek/vjsf-utils",
+    "version": "1.9.5",
     "description": "vue json schema form 使用的基础utils工具类",
     "private": false,
     "publishConfig": {

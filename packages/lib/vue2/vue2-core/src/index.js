@@ -6,11 +6,11 @@
 import Vue from 'vue';
 
 // 生成form表单默认数据
-import getDefaultFormState from 'vjsf-utils/schema/getDefaultFormState';
-import { deepEquals } from 'vjsf-utils/utils';
+import getDefaultFormState from '@goodgeek/vjsf-utils/schema/getDefaultFormState';
+import { deepEquals } from '@goodgeek/vjsf-utils/utils';
 
 // 基础公共样式
-import 'vjsf-utils/style/baseForm.css';
+import '@goodgeek/vjsf-utils/style/baseForm.css';
 
 import vueProps from './props';
 

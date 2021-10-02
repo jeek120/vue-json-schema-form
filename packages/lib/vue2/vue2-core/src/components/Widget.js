@@ -4,11 +4,11 @@
 
 import {
     isRootNodePath, path2prop, getPathVal, setPathVal
-} from 'vjsf-utils/vueUtils';
+} from '@goodgeek/vjsf-utils/vueUtils';
 
-import { validateFormDataAndTransformMsg } from 'vjsf-utils/schema/validate';
-import { IconQuestion } from 'vjsf-utils/icons';
-import { fallbackLabel } from 'vjsf-utils/formUtils';
+import { validateFormDataAndTransformMsg } from '@goodgeek/vjsf-utils/schema/validate';
+import { IconQuestion } from '@goodgeek/vjsf-utils/icons';
+import { fallbackLabel } from '@goodgeek/vjsf-utils/formUtils';
 
 export default {
     name: 'Widget',

@@ -2,7 +2,7 @@
  * Created by Liu.Jun on 2020/4/23 10:50.
  */
 
-import { getWidgetConfig, optionsList } from 'vjsf-utils/formUtils';
+import { getWidgetConfig, optionsList } from '@goodgeek/vjsf-utils/formUtils';
 
 import Widget from '../../components/Widget';
 import vueProps from '../props';

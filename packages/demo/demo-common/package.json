@@ -3,7 +3,7 @@
     "version": "1.2.0",
     "description": "vue json schema form demo公共代码",
     "keywords": [
-        "@lljj/vjsf-utils",
+        "@goodgeek/vjsf-utils",
         "vue",
         "vuejs",
         "form",

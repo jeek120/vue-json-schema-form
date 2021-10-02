@@ -197,7 +197,7 @@ import EditorHeader from 'demo-common/components/EditorHeader.vue';
 import CodeEditor from 'demo-common/components/CodeEditorV2';
 import schemaTypes from 'demo-common/schemaTypes';
 
-const VueElementForm = () => import('vue-json-schema-form');
+const VueElementForm = () => import('@goodgeek/vue-json-schema-form');
 
 const VueIview3Form = async () => {
     // eslint-disable-next-line

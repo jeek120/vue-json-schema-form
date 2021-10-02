@@ -1,11 +1,11 @@
 /**
  * Created by Liu.Jun on 2020/4/24 11:56.
  */
-import { allowAdditionalItems, getUiOptions, replaceArrayIndex } from 'vjsf-utils/formUtils';
-import getDefaultFormState from 'vjsf-utils/schema/getDefaultFormState';
-import { computedCurPath } from 'vjsf-utils/vueUtils';
-import { cutOff } from 'vjsf-utils/arrayUtils';
-import FieldGroupWrap from 'vjsf-utils/components/FieldGroupWrap';
+import { allowAdditionalItems, getUiOptions, replaceArrayIndex } from '@goodgeek/vjsf-utils/formUtils';
+import getDefaultFormState from '@goodgeek/vjsf-utils/schema/getDefaultFormState';
+import { computedCurPath } from '@goodgeek/vjsf-utils/vueUtils';
+import { cutOff } from '@goodgeek/vjsf-utils/arrayUtils';
+import FieldGroupWrap from '@goodgeek/vjsf-utils/components/FieldGroupWrap';
 import vueProps from '../../props';
 
 import SchemaField from '../../SchemaField';

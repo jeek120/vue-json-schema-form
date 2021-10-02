@@ -34,7 +34,7 @@ export default function guards(router) {
 
     // after each 不用改变路由行为，不采用上述模式
     router.afterEach((to, from) => {
-        const baseTitle = 'vue-json-schema-form';
+        const baseTitle = '@goodgeek/vue-json-schema-form';
         if (to.meta.title) {
             document.title = `${to.meta.title} | ${baseTitle}`;
         }

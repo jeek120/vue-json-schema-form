@@ -55,7 +55,7 @@
         vueUtils,
         formUtils,
         schemaValidate
-    } from 'vue-json-schema-form';
+    } from '@goodgeek/vue-json-schema-form';
 
     export default {
         name: 'LinkImgField',

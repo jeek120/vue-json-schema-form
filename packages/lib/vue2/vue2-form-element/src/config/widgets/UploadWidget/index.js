@@ -5,7 +5,7 @@
 // mock
 // https://run.mocky.io/v3/518d7af7-204f-45ab-9628-a6e121dab8ca
 
-import { openNewPage } from 'vjsf-utils/utils';
+import { openNewPage } from '@goodgeek/vjsf-utils/utils';
 
 export default {
     name: 'UploadWidget',

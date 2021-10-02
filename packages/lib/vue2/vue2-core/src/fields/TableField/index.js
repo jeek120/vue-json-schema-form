@@ -2,7 +2,7 @@
  * Created by Liu.Jun on 2020/4/23 10:50.
  */
 
-import { getWidgetConfig } from 'vjsf-utils/formUtils';
+import { getWidgetConfig } from '@goodgeek/vjsf-utils/formUtils';
 
 import Widget from '../../components/Widget';
 import vueProps from '../props';
@@ -16,8 +16,6 @@ export default {
             schema, uiSchema, curNodePath, rootFormData, globalOptions
         } = context.props;
 
-        const colNum = 3;
-
         const widgetConfig = getWidgetConfig({
             schema,
             uiSchema,
@@ -26,8 +24,6 @@ export default {
         }, () => ({
             widget: globalOptions.WIDGET_MAP.types.table
         }));
-
-        widgetConfig.uiProps.colNum = widgetConfig.uiProps.colNum || colNum;
 
         return h(
             Widget,

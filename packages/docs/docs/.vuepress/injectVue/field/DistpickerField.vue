@@ -15,7 +15,7 @@
 
 <script>
     import Distpicker from 'v-distpicker';
-    import { fieldProps, vueUtils } from 'vue-json-schema-form';
+    import { fieldProps, vueUtils } from '@goodgeek/vue-json-schema-form';
 
     export default {
         name: 'DistpickerField',

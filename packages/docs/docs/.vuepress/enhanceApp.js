@@ -1,6 +1,6 @@
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import VueForm from 'vue-json-schema-form';
+import VueForm from '@goodgeek/vue-json-schema-form';
 
 import componentWithDialog from './injectVue/component-with-dialog';
 import JsonPerttyPrint from './injectVue/JsonPerttyPrint.vue';

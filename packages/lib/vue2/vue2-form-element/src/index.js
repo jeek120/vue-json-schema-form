@@ -2,13 +2,13 @@
  * Created by Liu.Jun on 2019/11/29 11:25.
  */
 
-import createVue2Core, { fieldProps, SchemaField } from 'vue2-form-core';
+import createVue2Core, { fieldProps, SchemaField } from '@goodgeek/vue2-form-core';
 
-import i18n from 'vjsf-utils/i18n';
-import * as vueUtils from 'vjsf-utils/vueUtils';
-import * as formUtils from 'vjsf-utils/formUtils';
-import * as schemaValidate from 'vjsf-utils/schema/validate';
-import getDefaultFormState from 'vjsf-utils/schema/getDefaultFormState';
+import i18n from '@goodgeek/vjsf-utils/i18n';
+import * as vueUtils from '@goodgeek/vjsf-utils/vueUtils';
+import * as formUtils from '@goodgeek/vjsf-utils/formUtils';
+import * as schemaValidate from '@goodgeek/vjsf-utils/schema/validate';
+import getDefaultFormState from '@goodgeek/vjsf-utils/schema/getDefaultFormState';
 
 import WIDGET_MAP from './config/widgets/WIDGET_MAP.js';
 
@@ -29,8 +29,6 @@ const globalOptions = Object.freeze({
         }
     }
 });
-console.log('---------- globalOptions------');
-console.log(globalOptions);
 
 const JsonSchemaForm = createVue2Core(globalOptions);
 

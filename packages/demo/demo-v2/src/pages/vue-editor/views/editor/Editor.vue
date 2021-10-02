@@ -130,7 +130,7 @@
 
 <script>
 import Draggable from 'vuedraggable';
-import VueElementForm, { schemaValidate } from 'vue-json-schema-form';
+import VueElementForm, { schemaValidate } from '@goodgeek/vue-json-schema-form';
 
 import * as arrayMethods from 'demo-common/utils/array';
 import componentWithDialog from 'demo-common/components/component-with-dialog';

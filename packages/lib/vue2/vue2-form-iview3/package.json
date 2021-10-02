@@ -16,8 +16,8 @@
         "iView3"
     ],
     "dependencies": {
-        "vjsf-utils": "1.9.2",
-        "vue2-form-core": "1.9.2"
+        "@lljj/vjsf-utils": "1.9.2",
+        "@lljj/vue2-form-core": "1.9.2"
     },
     "typings": "types/index.d.ts",
     "files": [

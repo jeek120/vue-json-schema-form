@@ -6,7 +6,7 @@
 
 import {
     IconCaretUp, IconCaretDown, IconClose, IconPlus
-} from 'vjsf-utils/icons';
+} from '@goodgeek/vjsf-utils/icons';
 
 export default {
     name: 'ArrayOrderList',

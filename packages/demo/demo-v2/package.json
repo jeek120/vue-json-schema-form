@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@lljj/polyfill": "^0.1.0",
-        "vue-json-schema-form": "file:../../lib/vue2/vue2-form-element",
+        "@goodgeek/vue-json-schema-form": "file:../../lib/vue2/vue2-form-element",
         "@lljj/vue2-form-iview3": "1.9.2",
         "ajv-i18n": "^3.5.0",
         "demo-common": "1.2.0",

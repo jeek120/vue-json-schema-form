@@ -1,4 +1,4 @@
-/** @license vue-json-schema-form (c) 2020-2021 Liu.Jun License: Apache-2.0 */
+/** @license @goodgeek/vue-json-schema-form (c) 2020-2021 Liu.Jun License: Apache-2.0 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue')) :
     typeof define === 'function' && define.amd ? define(['exports', 'vue'], factory) :
@@ -11651,8 +11651,6 @@
                 schema, uiSchema, curNodePath, rootFormData, globalOptions
             } = context.props;
 
-            const colNum = 3;
-
             const widgetConfig = getWidgetConfig({
                 schema,
                 uiSchema,
@@ -11661,8 +11659,6 @@
             }, () => ({
                 widget: globalOptions.WIDGET_MAP.types.table
             }));
-
-            widgetConfig.uiProps.colNum = widgetConfig.uiProps.colNum || colNum;
 
             return h(
                 Widget,
@@ -12036,12 +12032,51 @@
     //
     //
     //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
     var script$3 = {
       name: 'TableWidget',
       props: {
-        values: {
+        value: {
           default: function _default() {
-            return [['1列', '2列', '3列'], ['', '', '']];
+            return [['', '2列', '3列'], ['', '', '']];
           },
           type: [Array]
         }
@@ -12049,16 +12084,18 @@
       data: function data() {
         var visible = false;
         var domExcelTxt = '';
+        var isEdit = false;
         return {
           visible: visible,
-          domExcelTxt: domExcelTxt
+          domExcelTxt: domExcelTxt,
+          isEdit: isEdit
         };
       },
       computed: {
         excelTxt: {
           get: function get() {
             var strs = [];
-            this.values.forEach(function (arr) {
+            this.value.forEach(function (arr) {
               strs.push(arr.join('\t'));
             });
             return strs.join('\n');
@@ -12066,51 +12103,64 @@
           set: function set(newValue) {
             var _this = this;
 
-            debugger;
             var arrs = newValue.replace(/\n$/, '').split('\n');
-            this.values.length = 0;
+            this.value.length = 0;
             arrs.forEach(function (line) {
-              _this.values.push(line.split('\t'));
+              _this.value.push(line.split('\t'));
             });
-            console.log(arrs);
-            console.log(this.values);
           }
         }
       },
       methods: {
+        edit: function edit() {
+          this.isEdit = true;
+          this.value.splice(0, 0);
+          this.$emit('input', this.value);
+        },
+        editOk: function editOk() {
+          this.isEdit = false;
+          this.value.splice(0, 0);
+          this.$emit('input', this.value);
+        },
         addCol: function addCol(item) {
-          debugger;
-          this.values.map(function (arr) {
-            arr.push(item);
+          this.value.map(function (arr, idx) {
+            if (idx === 0) {
+              arr.push('列');
+            } else {
+              arr.push(item);
+            }
+
             return arr;
           });
-          this.$emit('input', this.values);
+          this.$emit('input', this.value);
         },
         removeCol: function removeCol() {
-          this.values.map(function (arr) {
+          this.value.map(function (arr) {
             arr.pop();
             return arr;
           });
-          this.$emit('input', this.values);
+          this.$emit('input', this.value);
         },
         addRow: function addRow(j) {
-          debugger;
           var arr = [];
 
-          for (var i = 0; i < this.values[0].length; i += 1) {
+          for (var i = 0; i < this.value[0].length; i += 1) {
             arr.push('');
           }
 
-          this.values.splice(j, 0, arr);
-          this.$emit('input', this.values);
+          this.value.splice(j + 2, 0, arr);
+          this.$emit('input', this.value);
         },
         removeRow: function removeRow(j) {
-          this.values.splice(j, 1);
-          this.$emit('input', this.values);
+          this.value.splice(j + 1, 1);
+          this.value.splice(0, 0);
+          this.$emit('input', this.value);
         },
         excelOk: function excelOk() {
           this.excelTxt = this.domExcelTxt;
-          this.$emit('input', this.values);
+          this.isEdit = false;
+          this.value.splice(0, 0);
+          this.$emit('input', this.value);
         }
       }
     };
@@ -12127,12 +12177,44 @@
       var _c = _vm._self._c || _h;
 
       return _c("div", [_c("el-button", {
+        attrs: {
+          size: "mini"
+        },
         on: {
           click: function click($event) {
             return _vm.addCol();
           }
         }
-      }, [_vm._v("\n        增加一列\n    ")]), _vm._v(" "), _c("el-popover", {
+      }, [_vm._v("\n        增加一列\n    ")]), _vm._v(" "), _c("el-button", {
+        attrs: {
+          type: "danger",
+          size: "mini"
+        },
+        on: {
+          click: function click($event) {
+            return _vm.removeCol();
+          }
+        }
+      }, [_vm._v("\n        减少一列\n    ")]), _vm._v(" "), !_vm.isEdit ? _c("el-button", {
+        attrs: {
+          size: "mini"
+        },
+        on: {
+          click: function click($event) {
+            return _vm.edit();
+          }
+        }
+      }, [_vm._v("\n        编辑\n    ")]) : _vm._e(), _vm._v(" "), _vm.isEdit ? _c("el-button", {
+        attrs: {
+          type: "primary",
+          size: "mini"
+        },
+        on: {
+          click: function click($event) {
+            return _vm.editOk();
+          }
+        }
+      }, [_vm._v("\n        确定\n    ")]) : _vm._e(), _vm._v(" "), _c("el-popover", {
         attrs: {
           placement: "bottom",
           width: "400",
@@ -12186,7 +12268,9 @@
         }
       }, [_vm._v("\n                确定\n            ")])], 1), _vm._v(" "), _c("el-button", {
         attrs: {
-          slot: "reference"
+          slot: "reference",
+          type: "success",
+          size: "mini"
         },
         on: {
           click: function click($event) {
@@ -12203,19 +12287,40 @@
           width: "100%"
         },
         attrs: {
-          data: _vm.values.slice(1),
+          data: _vm.value.slice(1),
           stripe: ""
         }
-      }, [_vm._l(_vm.values[0], function (item, i) {
+      }, [_vm._l(_vm.value[0], function (item, i) {
         return _c("el-table-column", {
           key: i,
           attrs: {
             label: item
           },
           scopedSlots: _vm._u([{
+            key: "header",
+            fn: function fn(scope) {
+              return [_vm.isEdit ? _c("el-input", {
+                model: {
+                  value: _vm.value[0][i],
+                  callback: function callback($$v) {
+                    _vm.$set(_vm.value[0], i, $$v);
+                  },
+                  expression: "value[0][i]"
+                }
+              }) : _vm._e(), _vm._v(" "), !_vm.isEdit ? _c("span", [_vm._v(_vm._s(_vm.value[0][i]))]) : _vm._e()];
+            }
+          }, {
             key: "default",
             fn: function fn(scope) {
-              return [_vm._v("\n                " + _vm._s(scope.row[i]) + "\n            ")];
+              return [_vm.isEdit ? _c("el-input", {
+                model: {
+                  value: scope.row[i],
+                  callback: function callback($$v) {
+                    _vm.$set(scope.row, i, $$v);
+                  },
+                  expression: "scope.row[i]"
+                }
+              }) : _vm._e(), _vm._v(" "), !_vm.isEdit ? _c("span", [_vm._v(_vm._s(scope.row[1]))]) : _vm._e()];
             }
           }], null, true)
         });
@@ -12229,7 +12334,7 @@
             return [_c("el-button", {
               attrs: {
                 circle: "",
-                size: "small",
+                size: "mini",
                 type: "danger",
                 icon: "el-icon-delete"
               },
@@ -12241,7 +12346,7 @@
             }), _vm._v(" "), _c("el-button", {
               attrs: {
                 circle: "",
-                size: "small",
+                size: "mini",
                 type: "primary",
                 icon: "el-icon-plus"
               },
@@ -12899,8 +13004,6 @@
         }
       }
     });
-    console.log('---------- globalOptions------');
-    console.log(globalOptions);
     var JsonSchemaForm = createForm(globalOptions); // 存在Vue 全局变量默认注册 VueForm 组件
 
     if (typeof window !== 'undefined' && window.Vue) {
